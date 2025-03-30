@@ -2,9 +2,8 @@ package gui;
 
 public class Main{
 
-    Interfaz interfaz = new Interfaz();
-
-    public static void main(){
+    public static void main(String[] args){
+        Interfaz interfaz = new Interfaz();
         interfaz.vista();
     }
 }
