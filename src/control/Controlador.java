@@ -8,29 +8,25 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class Controlador {
-    private Almacen almacen;
+    private final Almacen almacen;
 
     public Controlador() throws IOException {
         this.almacen = new Almacen();
     }
 
-    public void registrarAlquiler(String responsableNombre, String cedula, String celular, String direccion,
-                                  String estudianteNombre, String talla, String colegio, String curso,
-                                  String trajeClase, String cantidad, String retiro, String entrega, String deposito) throws IOException {
-        // Convertir los datos antes de pasarlos a Almacen
-        int cedulaInt = Integer.parseInt(cedula);
-        int celularInt = Integer.parseInt(celular);
-        int cantidadInt = Integer.parseInt(cantidad);
-        double depositoDouble = Double.parseDouble(deposito);
+    public void registrarAlquiler(String responsableNombre, String direccion, String celular, String cedula,
+                                  String estudianteNombre, String colegio, String talla,
+                                  String cantidad, String retiro, String entrega, String deposito, String grado,
+                                  String trajeClase, String color, String sombrero) throws IOException {
+
         LocalDateTime fechaRetiro = LocalDateTime.parse(retiro);
         LocalDateTime fechaEntrega = LocalDateTime.parse(entrega);
+        double depositoDouble = Double.parseDouble(deposito);
 
-        Responsable responsable = new Responsable(responsableNombre, direccion, celularInt, cedulaInt);
-        Estudiante estudiante = new Estudiante(estudianteNombre, curso, colegio, talla);
-        Traje traje = new Traje();
-        traje.setClase(trajeClase);
-
-        almacen.registrarAlquiler(responsable, estudiante, traje, cantidadInt, fechaRetiro, fechaEntrega, depositoDouble);
+        almacen.registrarAlquiler(responsableNombre, direccion, Integer.parseInt(celular), Integer.parseInt(cedula),
+        estudianteNombre, grado, colegio, talla, Integer.parseInt(cantidad),
+        fechaRetiro, fechaEntrega, depositoDouble,
+                trajeClase, color, Boolean.parseBoolean(sombrero));
     }
 
     public String obtenerAlquileres() {
@@ -39,5 +35,14 @@ public class Controlador {
 
     public void eliminarCancelados() throws IOException {
         almacen.eliminarCancelados();
+    }
+
+    public String verificarMultas() {
+        return almacen.verificarMultas();
+    }
+
+    public void marcarComoPagado(String index) throws IOException {
+        int indexInt = Integer.parseInt(index);
+        almacen.marcarComoPagado(indexInt);
     }
 }
