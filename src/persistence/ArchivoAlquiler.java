@@ -1,24 +1,20 @@
 package persistence;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArchivoAlquiler {
-    private static final String FILE_PATH = "alquileres.csv";
-
-    public void guardarAlquiler(String datosAlquiler) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            bw.write(datosAlquiler);
-            bw.newLine();
-        }
-    }
+    private static final String FILE_NAME = "alquileres.csv";
 
     public List<String> cargarAlquileres() throws IOException {
         List<String> lineas = new ArrayList<>();
-        File file = new File(FILE_PATH);
-        if (!file.exists()) return lineas;
+        File file = new File(FILE_NAME);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_PATH))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 lineas.add(linea);
@@ -27,13 +23,12 @@ public class ArchivoAlquiler {
         return lineas;
     }
 
-    public void sobrescribirAlquileres(List<String> datosAlquileres) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (String datos : datosAlquileres) {
-                bw.write(datos);
+    public void sobrescribirAlquileres(List<String> datos) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
+            for (String linea : datos) {
+                bw.write(linea);
                 bw.newLine();
             }
         }
     }
 }
-
