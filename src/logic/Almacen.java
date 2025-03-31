@@ -10,7 +10,7 @@ import java.util.List;
 public class Almacen {
 	private List<Alquiler> alquileres;
 	private ArchivoAlquiler archivo;
-	private static final double MULTA_POR_DIA = 5000;
+	private static final double MULTA_POR_DIA = 2500;
 
 	public Almacen() throws IOException {
 		this.archivo = new ArchivoAlquiler();
