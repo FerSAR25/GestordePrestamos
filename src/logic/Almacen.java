@@ -29,9 +29,9 @@ public class Almacen {
 		traje.setColor(color);
 		traje.setSombrero(sombrero);
 		Alquiler alquiler = new Alquiler(responsable, estudiante, traje, cantidad, retiro, entrega, deposito);
-		alquileres.add(alquiler);
-		guardarAlquileres();
-	}
+
+        archivo.guardarAlquilerDirecto(convertirACSV(alquiler));
+    }
 
 	public String obtenerAlquileres() {
 		StringBuilder sb = new StringBuilder();
@@ -55,15 +55,45 @@ public class Almacen {
 						.append(" - Multa: $").append(multa).append("\n");
 			}
 		}
-		return resultado.length() > 0 ? resultado.toString() : "No hay multas pendientes.";
+		return !resultado.isEmpty() ? resultado.toString() : "No hay multas pendientes.";
 	}
 
-	public void marcarComoPagado(int index) throws IOException {
-		if (index >= 0 && index < alquileres.size()) {
-			alquileres.get(index).cancelarAlquiler();
-			guardarAlquileres();
-		}
-	}
+    public boolean marcarComoPagado(int cedulaRepresentante, LocalDateTime fechaRetiro) throws IOException {
+        for (int i = 0; i < alquileres.size(); i++) {
+            Alquiler alquiler = alquileres.get(i);
+            if (alquiler.getResponsable().getCedula() == cedulaRepresentante &&
+                    alquiler.getFechaRetiro().equals(fechaRetiro)) {
+                alquiler.cancelarAlquiler(); // Marcar como pagado
+
+                // Convertir alquiler a CSV
+                String alquilerCSV = alquiler.getEstudiante().getNombre() + "," +
+                        alquiler.getFechaRetiro() + "," +
+                        alquiler.getFechaEntrega() + "," +
+                        alquiler.getDeposito() + "," +
+                        (alquiler.isCancelado() ? "S" : "N");
+
+                // Actualizar el alquiler en el archivo
+                archivo.actualizarAlquiler(i, alquilerCSV);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Obtener solo los alquileres pagados
+    public String obtenerAlquileresPagados() {
+        StringBuilder sb = new StringBuilder();
+        for (Alquiler alquiler : alquileres) {
+            if (alquiler.isCancelado()) {
+                sb.append(alquiler.getEstudiante().getNombre() + "," +
+                        alquiler.getFechaRetiro() + "," +
+                        alquiler.getFechaEntrega() + "," +
+                        alquiler.getDeposito() + "," +
+                        (alquiler.isCancelado() ? "S" : "N")).append("\n");
+            }
+        }
+        return !sb.isEmpty() ? sb.toString() : "No hay alquileres pagados.";
+    }
 
 	private double calcularMulta(Alquiler alquiler) {
 		long diasRetraso = ChronoUnit.DAYS.between(alquiler.getFechaEntrega(), LocalDateTime.now());

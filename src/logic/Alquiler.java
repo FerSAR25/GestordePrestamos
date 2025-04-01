@@ -11,6 +11,7 @@ public class Alquiler {
     private LocalDateTime fechaRetiro;
     private LocalDateTime fechaEntrega;
     private double deposito;
+    private boolean devuelto;
 
     public Alquiler(Responsable responsable, Estudiante estudiante, Traje traje, int cantidad,
                     LocalDateTime fechaRetiro, LocalDateTime fechaEntrega, double deposito) {
@@ -22,6 +23,7 @@ public class Alquiler {
         this.fechaEntrega = fechaEntrega;
         this.deposito = deposito;
         this.cancelado = false;
+        this.devuelto = false;
     }
 
     public void cancelarAlquiler() {
@@ -30,6 +32,14 @@ public class Alquiler {
 
     public boolean isCancelado() {
         return cancelado;
+    }
+
+    public boolean isDevuelto() {
+        return devuelto;
+    }
+
+    public void marcarDevuelto() {
+        this.devuelto = true;
     }
 
     public LocalDateTime getFechaEntrega() {
