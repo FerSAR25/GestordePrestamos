@@ -13,7 +13,6 @@ public class Almacen {
 
 	public Almacen() throws IOException {
 		this.archivo = new ArchivoAlquiler();
-		this.alquileres = new ArrayList<>();
 		this.cargarAlquileres();
 	}
 
