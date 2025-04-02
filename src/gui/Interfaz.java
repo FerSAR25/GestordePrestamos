@@ -22,8 +22,8 @@ public class Interfaz {
             System.out.println("1. Registrar alquiler");
             System.out.println("2. Ver lista de alquileres activos");
             System.out.println("3. Marcar préstamo como pagado");
-            System.out.println("4. Verificar multas");
-            System.out.println("5. ");
+            System.out.println("4. Mostrar multas");
+            System.out.println("5. Buscar alquiler");
             System.out.println("6. Salir");
             System.out.print("Seleccione una opción: ");
 
@@ -45,7 +45,10 @@ public class Interfaz {
                 case "2":
                     try{
                         List<String[]> alquileresActivos = controlador.obtenerAlquileresActivos();
-                        mostrarAlquileres(alquileresActivos);
+                        for(String[] alquiler: alquileresActivos){
+                            mostrarAlquileres(alquiler);
+                            System.out.println("-----------------------------------");
+                        }
                     }
                     catch (IOException e){
                         System.out.println("Error al abrir archivo de alquileres activos");
@@ -55,10 +58,33 @@ public class Interfaz {
                 case "3":
                     marcarComoPagado();
                     break;
+                // Llama al controlador para devolver todos los préstamos que tengan alguna multa
                 case "4":
-                    System.out.println(controlador.verificarMultas());
+                    try{
+                        // Usa exclusivamente los alquileres que aun no han sido devueltos
+                        List<String[]> alquileres = controlador.obtenerAlquileresActivos();
+                        for(String[] alquiler: alquileres){
+                            double multa = controlador.verificarMultas(alquiler);
+                            // Solo si se pasa del plazo se muestra la multa correspondiente
+                            if(multa > 0){
+                                mostrarAlquileres(alquiler);
+                                System.out.println("Multa: " + multa);
+                                System.out.println("-----------------------------------");
+                            }
+                        }
+                    }
+                    catch(IOException e){
+                        System.out.println("Error al mostrar las multas actuales");
+                    }
                     break;
+                // Se pide la fecha en que se realizó un alquiler y la cedula del representante
                 case "5":
+                    try{
+                        buscarAlquiler();
+                    }
+                    catch (IOException e){
+                        e.getMessage();
+                    }
                     break;
                 case "6":
                     System.out.println("Saliendo del sistema...");
@@ -98,19 +124,7 @@ public class Interfaz {
         System.out.print("Cantidad de trajes: ");
         String cantidad = scanner.nextLine().trim();
         System.out.print("Depósito: ");
-
-        // Datos para las fechas de entrega y retiro
         String deposito = scanner.nextLine().trim();
-        System.out.print("Año de retiro (YYYY): ");
-        String añoRetiro = scanner.nextLine().trim();
-        System.out.print("Mes de retiro (MM): ");
-        String mesRetiro = scanner.nextLine().trim();
-        System.out.print("Día de retiro (DD): ");
-        String diaRetiro = scanner.nextLine().trim();
-        System.out.print("Hora de retiro (HH): ");
-        String horaRetiro = scanner.nextLine().trim();
-        System.out.print("Minutos de retiro (MM): ");
-        String minRetiro = scanner.nextLine().trim();
 
         System.out.print("Año de entrega (YYYY): ");
         String añoEntrega = scanner.nextLine().trim();
@@ -131,19 +145,9 @@ public class Interfaz {
             sombrero = "false";
         }
 
-        // Verifica que los valores de fechas no estén vacios antes de enviarlos al controlador
-        if (añoRetiro.isEmpty() || mesRetiro.isEmpty() || diaRetiro.isEmpty() ||
-                horaRetiro.isEmpty() || minRetiro.isEmpty() ||
-                añoEntrega.isEmpty() || mesEntrega.isEmpty() || diaEntrega.isEmpty() ||
-                horaEntrega.isEmpty() || minEntrega.isEmpty()) {
-            System.out.println("Error: Algún valor de la fecha está vacío.");
-            return;
-        }
-
         // Le manda al controlador todos los datos ya comprobados
         controlador.registrarAlquiler(responsableNombre, direccion, celular, cedula,
                 estudianteNombre, grado, colegio, talla, cantidad, deposito, trajeClase, color, sombrero,
-                añoRetiro, mesRetiro, diaRetiro, horaRetiro, minRetiro,
                 añoEntrega, mesEntrega, diaEntrega, horaEntrega, minEntrega);
 
         // Si no hay ningún error (IOException), es decir se guardó correctamente, se muestra el siguiente mensaje en pantalla
@@ -151,27 +155,53 @@ public class Interfaz {
     }
 
     // Muestra uno por uno cada dato dentro de la lista de arrays de String, es decir la información de cada alquiler
-    public void mostrarAlquileres(List<String[]> alquileres) {
+    public void mostrarAlquileres(String[] alquiler) {
         System.out.println("Alquileres aún no devueltos:\n");
-        for (String[] alquiler : alquileres) {
-            System.out.println("Responsable: " + alquiler[0]);
-            System.out.println("Dirección: " + alquiler[1]);
-            System.out.println("Celular: " + alquiler[2]);
-            System.out.println("Cédula: " + alquiler[3]);
-            System.out.println("Estudiante: " + alquiler[4]);
-            System.out.println("Grado: " + alquiler[5]);
-            System.out.println("Colegio: " + alquiler[6]);
-            System.out.println("Talla: " + alquiler[7]);
-            System.out.println("Traje: " + alquiler[8]);
-            System.out.println("Color: " + alquiler[9]);
-            System.out.println("Sombrero: " + alquiler[10]);
-            System.out.println("Cantidad: " + alquiler[11]);
-            System.out.println("Fecha Retiro: " + alquiler[12]);
-            System.out.println("Fecha Entrega: " + alquiler[13]);
-            System.out.println("Depósito: " + alquiler[14]);
-            System.out.println("Cancelado: " + alquiler[15]);
-            System.out.println("-----------------------------------");
+        System.out.println("Responsable: " + alquiler[0]);
+        System.out.println("Dirección: " + alquiler[1]);
+        System.out.println("Celular: " + alquiler[2]);
+        System.out.println("Cédula: " + alquiler[3]);
+        System.out.println("Estudiante: " + alquiler[4]);
+        System.out.println("Grado: " + alquiler[5]);
+        System.out.println("Colegio: " + alquiler[6]);
+        System.out.println("Talla: " + alquiler[7]);
+        System.out.println("Traje: " + alquiler[8]);
+        System.out.println("Color: " + alquiler[9]);
+        System.out.println("Sombrero: " + alquiler[10]);
+        System.out.println("Cantidad: " + alquiler[11]);
+        System.out.println("Fecha Retiro: " + alquiler[12]);
+        System.out.println("Fecha Entrega: " + alquiler[13]);
+        System.out.println("Depósito: " + alquiler[14]);
+        System.out.println("Cancelado: " + alquiler[15]);
+    }
+
+    // Pide los datos de cedula y fecha de retiro
+    private void buscarAlquiler() throws IOException {
+        System.out.print("Ingrese la cédula del representante: ");
+        String cedulaRepresentante = scanner.nextLine().trim();
+        System.out.print("Año de retiro (YYYY): ");
+        String añoRetiro = scanner.nextLine().trim();
+        System.out.print("Mes de retiro (MM): ");
+        String mesRetiro = scanner.nextLine().trim();
+        System.out.print("Día de retiro (DD): ");
+        String diaRetiro = scanner.nextLine().trim();
+        System.out.print("Hora de retiro (HH): ");
+        String horaRetiro = scanner.nextLine().trim();
+        System.out.print("Minutos de retiro (MM): ");
+        String minRetiro = scanner.nextLine().trim();
+
+        String[] alquiler = controlador.buscarAlquiler(cedulaRepresentante, añoRetiro, mesRetiro, diaRetiro, horaRetiro, minRetiro);
+        if(alquiler.length == 0){
+            throw new IOException("Error. Alquiler no encontrado");
         }
+        mostrarAlquileres(alquiler);
+        double multa = controlador.verificarMultas(alquiler);
+
+        if(multa > 0){
+            System.out.println("Multa: " + multa);
+        }
+        System.out.print("Pago: " + alquiler[16]);
+        System.out.println("-----------------------------------");
     }
 
     // Recibe los datos de cedula y fecha de retiro para pasarlas al controlador
@@ -201,4 +231,6 @@ public class Interfaz {
             System.out.println("Error al marcar el alquiler como pagado.");
         }
     }
+
+
 }
