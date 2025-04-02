@@ -60,7 +60,7 @@ public class Almacen {
 
         for (String[] alquiler : alquileres) {
             // Verifica si la cédula del responsable y la fecha de entrega coinciden
-            if (alquiler[3].equals(cedulaResponsable) && alquiler[14].equals(fechaRetiro)) {
+            if (alquiler[3].equals(cedulaResponsable) && alquiler[13].equals(fechaRetiro)) {
                 alquiler[15] = "true"; // Cambia el estado de pago a "true"
                 encontrado = true;
                 break;  // Sale del bucle al encontrar el alquiler
