@@ -61,7 +61,7 @@ public class Interfaz {
                 // Llama al controlador para devolver todos los préstamos que tengan alguna multa
                 case "4":
                     try{
-                        // Usa exclusivamente los alquileres que aun no han sido devueltos
+                        // Usa exclusivamente los alquileres que aún no han sido devueltos
                         List<String[]> alquileres = controlador.obtenerAlquileresActivos();
                         for(String[] alquiler: alquileres){
                             double multa = controlador.verificarMultas(alquiler);
@@ -77,13 +77,13 @@ public class Interfaz {
                         System.out.println("Error al mostrar las multas actuales");
                     }
                     break;
-                // Se pide la fecha en que se realizó un alquiler y la cedula del representante
+                // Se pide la fecha en que se realizó un alquiler y la cédula del representante
                 case "5":
                     try{
                         buscarAlquiler();
                     }
                     catch (IOException e){
-                        e.getMessage();
+                        System.out.println("Error al buscar alquiler.");
                     }
                     break;
                 case "6":
@@ -127,15 +127,13 @@ public class Interfaz {
         String deposito = scanner.nextLine().trim();
 
         System.out.print("Año de entrega (YYYY): ");
-        String añoEntrega = scanner.nextLine().trim();
+        String aEntrega = scanner.nextLine().trim();
         System.out.print("Mes de entrega (MM): ");
         String mesEntrega = scanner.nextLine().trim();
         System.out.print("Día de entrega (DD): ");
         String diaEntrega = scanner.nextLine().trim();
         System.out.print("Hora de entrega (HH): ");
         String horaEntrega = scanner.nextLine().trim();
-        System.out.print("Minutos de entrega (MM): ");
-        String minEntrega = scanner.nextLine().trim();
 
         // Dependiendo del valor, se pone verdadero o falso
         if(sombrero.equalsIgnoreCase("s")){
@@ -148,7 +146,7 @@ public class Interfaz {
         // Le manda al controlador todos los datos ya comprobados
         controlador.registrarAlquiler(responsableNombre, direccion, celular, cedula,
                 estudianteNombre, grado, colegio, talla, cantidad, deposito, trajeClase, color, sombrero,
-                añoEntrega, mesEntrega, diaEntrega, horaEntrega, minEntrega);
+                aEntrega, mesEntrega, diaEntrega, horaEntrega);
 
         // Si no hay ningún error (IOException), es decir se guardó correctamente, se muestra el siguiente mensaje en pantalla
         System.out.println("Alquiler registrado exitosamente.");
@@ -180,19 +178,18 @@ public class Interfaz {
         System.out.print("Ingrese la cédula del representante: ");
         String cedulaRepresentante = scanner.nextLine().trim();
         System.out.print("Año de retiro (YYYY): ");
-        String añoRetiro = scanner.nextLine().trim();
+        String aRetiro = scanner.nextLine().trim();
         System.out.print("Mes de retiro (MM): ");
         String mesRetiro = scanner.nextLine().trim();
         System.out.print("Día de retiro (DD): ");
         String diaRetiro = scanner.nextLine().trim();
         System.out.print("Hora de retiro (HH): ");
         String horaRetiro = scanner.nextLine().trim();
-        System.out.print("Minutos de retiro (MM): ");
-        String minRetiro = scanner.nextLine().trim();
 
-        String[] alquiler = controlador.buscarAlquiler(cedulaRepresentante, añoRetiro, mesRetiro, diaRetiro, horaRetiro, minRetiro);
+        String[] alquiler = controlador.buscarAlquiler(cedulaRepresentante, aRetiro, mesRetiro, diaRetiro, horaRetiro);
         if(alquiler.length == 0){
-            throw new IOException("Error. Alquiler no encontrado");
+            System.out.println("Error. Alquiler no encontrado");
+            return;
         }
         mostrarAlquileres(alquiler);
         double multa = controlador.verificarMultas(alquiler);
@@ -209,20 +206,18 @@ public class Interfaz {
         System.out.print("Ingrese la cédula del representante: ");
         String cedulaRepresentante = scanner.nextLine().trim();
         System.out.print("Año de retiro (YYYY): ");
-        String añoRetiro = scanner.nextLine().trim();
+        String aRetiro = scanner.nextLine().trim();
         System.out.print("Mes de retiro (MM): ");
         String mesRetiro = scanner.nextLine().trim();
         System.out.print("Día de retiro (DD): ");
         String diaRetiro = scanner.nextLine().trim();
         System.out.print("Hora de retiro (HH): ");
         String horaRetiro = scanner.nextLine().trim();
-        System.out.print("Minutos de retiro (MM): ");
-        String minRetiro = scanner.nextLine().trim();
 
         // Se llama al controlador, y si se recibe un valor true salió correctamente en cambio
         // si es false no se encontró el alquiler, o una excepcion no se pudo abrir el archivo
         try {
-            if (controlador.marcarComoPagado(cedulaRepresentante, añoRetiro, mesRetiro, diaRetiro, horaRetiro, minRetiro)) {
+            if (controlador.marcarComoPagado(cedulaRepresentante, aRetiro, mesRetiro, diaRetiro, horaRetiro)) {
                 System.out.println("El alquiler ha sido marcado como pagado.");
             } else {
                 System.out.println("No se encontró el alquiler.");

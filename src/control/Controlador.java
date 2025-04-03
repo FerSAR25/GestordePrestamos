@@ -18,21 +18,20 @@ public class Controlador {
                                   String estudianteNombre, String grado, String colegio, String talla,
                                   String cantidad, String deposito,
                                   String trajeClase, String color, String sombrero,
-                                  String añoEntrega, String mesEntrega, String diaEntrega,
-                                  String horaEntrega, String minEntrega) throws IOException {
+                                  String aEntrega, String mesEntrega, String diaEntrega,
+                                  String horaEntrega) throws IOException {
 
         // Si por ejemplo la fecha está "1", le pone el formato adecuado "01"
         mesEntrega = mesEntrega.length() == 1 ? "0" + mesEntrega : mesEntrega;
         diaEntrega = diaEntrega.length() == 1 ? "0" + diaEntrega : diaEntrega;
         horaEntrega = horaEntrega.length() == 1 ? "0" + horaEntrega : horaEntrega;
-        minEntrega = minEntrega.length() == 1 ? "0" + minEntrega : minEntrega;
 
         // Genera el formato necesario de fecha, agrupando todos los datos obtenidos de cada fecha
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH");
 
         LocalDateTime fechaActual = LocalDateTime.now();
         String retiro = fechaActual.format(formatter);
-        String entrega = añoEntrega + "-" + mesEntrega + "-" + diaEntrega + "T" + horaEntrega + ":" + minEntrega;
+        String entrega = aEntrega + "-" + mesEntrega + "-" + diaEntrega + "T" + horaEntrega;
 
         // Convierte las fechas String en formato de fecha a LocalDateTime
         LocalDateTime fechaRetiro = LocalDateTime.parse(retiro, formatter);
@@ -54,14 +53,13 @@ public class Controlador {
     }
 
     // Metodo para marcar como pagado, pasandole los datos necesarios a la logica
-    public boolean marcarComoPagado(String cedulaRepresentante, String añoRetiro, String mesRetiro, String diaRetiro, String horaRetiro, String minRetiro) throws IOException {
+    public boolean marcarComoPagado(String cedulaRepresentante, String aRetiro, String mesRetiro, String diaRetiro, String horaRetiro) throws IOException {
         mesRetiro = mesRetiro.length() == 1 ? "0" + mesRetiro : mesRetiro;
         diaRetiro = diaRetiro.length() == 1 ? "0" + diaRetiro : diaRetiro;
         horaRetiro = horaRetiro.length() == 1 ? "0" + horaRetiro : horaRetiro;
-        minRetiro = minRetiro.length() == 1 ? "0" + minRetiro : minRetiro;
 
-        String retiro = añoRetiro + "-" + mesRetiro + "-" + diaRetiro + "T" + horaRetiro + ":" + minRetiro;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        String retiro = aRetiro + "-" + mesRetiro + "-" + diaRetiro + "T" + horaRetiro;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH");
         LocalDateTime fechaRetiro = LocalDateTime.parse(retiro, formatter);
 
         return almacen.marcarComoPagado(cedulaRepresentante, String.valueOf(fechaRetiro));
@@ -69,7 +67,7 @@ public class Controlador {
 
     // Llama al almacen para devolver una lista de arrays con los alquileres
     public double verificarMultas(String[] alquiler) throws IOException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH");
 
         // Obtiene la fecha actual para ser comparada con la fecha de entrega, verificando si se pasó o no
         LocalDateTime fecha = LocalDateTime.now();
@@ -87,13 +85,12 @@ public class Controlador {
     }
 
     // Metodo para buscar un alquiler en específico, pasandole los datos necesarios a la logica
-    public String[] buscarAlquiler(String cedulaRepresentante, String añoRetiro, String mesRetiro, String diaRetiro, String horaRetiro, String minRetiro) throws IOException {
+    public String[] buscarAlquiler(String cedulaRepresentante, String aRetiro, String mesRetiro, String diaRetiro, String horaRetiro) throws IOException {
         mesRetiro = mesRetiro.length() == 1 ? "0" + mesRetiro : mesRetiro;
         diaRetiro = diaRetiro.length() == 1 ? "0" + diaRetiro : diaRetiro;
         horaRetiro = horaRetiro.length() == 1 ? "0" + horaRetiro : horaRetiro;
-        minRetiro = minRetiro.length() == 1 ? "0" + minRetiro : minRetiro;
 
-        String retiro = añoRetiro + "-" + mesRetiro + "-" + diaRetiro + "T" + horaRetiro + ":" + minRetiro;
+        String retiro = aRetiro + "-" + mesRetiro + "-" + diaRetiro + "T" + horaRetiro;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
         LocalDateTime fechaRetiro = LocalDateTime.parse(retiro, formatter);
 
