@@ -42,8 +42,8 @@ public class Controlador {
         double depositoDouble = Double.parseDouble(deposito);
 
         // Le pasa la información ya en el tipo deseado a la logica del Almacen, parseandole algunos datos
-        almacen.registrarAlquiler(responsableNombre, direccion, Integer.parseInt(celular),
-                Integer.parseInt(cedula), estudianteNombre, grado, colegio, talla,
+        almacen.registrarAlquiler(responsableNombre, direccion, Long.parseLong(celular),
+                Long.parseLong(cedula), estudianteNombre, grado, colegio, talla,
                 Integer.parseInt(cantidad), fechaRetiro, fechaEntrega, depositoDouble,
                 trajeClase, color, Boolean.parseBoolean(sombrero));
     }
@@ -83,7 +83,7 @@ public class Controlador {
         LocalDateTime fechaRetiro = LocalDateTime.parse(retiro, formatter);
         LocalDateTime fechaEntrega = LocalDateTime.parse(entrega, formatter);
 
-        return almacen.verificarMultas(fechaActual, fechaRetiro, fechaEntrega);
+        return almacen.verificarMultas(fechaActual, fechaRetiro, fechaEntrega, Double.parseDouble(alquiler[14]));
     }
 
     // Metodo para buscar un alquiler en específico, pasandole los datos necesarios a la logica
@@ -98,9 +98,5 @@ public class Controlador {
         LocalDateTime fechaRetiro = LocalDateTime.parse(retiro, formatter);
 
         return almacen.buscarAlquiler(cedulaRepresentante, String.valueOf(fechaRetiro));
-    }
-
-    public String obtenerAlquileresPagados() {
-        return almacen.obtenerAlquileresPagados();
     }
 }

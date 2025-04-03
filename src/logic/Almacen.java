@@ -16,7 +16,7 @@ public class Almacen {
 	}
 
     // Recibe los datos ya parseados del controlador, y ahora realiza el proceso para registrar el nuevo alquiler
-	public void registrarAlquiler(String responsableNombre, String direccion, int celular, int cedula,
+	public void registrarAlquiler(String responsableNombre, String direccion, long celular, long cedula,
 								  String estudianteNombre, String grado, String colegio, String talla, int cantidad,
 								  LocalDateTime retiro, LocalDateTime entrega, Double deposito,
 								  String trajeClase, String color, boolean sombrero) throws IOException {
@@ -73,7 +73,7 @@ public class Almacen {
         }
     }
 
-    public double verificarMultas(LocalDateTime fechaActual, LocalDateTime fechaRetiro, LocalDateTime fechaEntrega) throws IOException {
+    public double verificarMultas(LocalDateTime fechaActual, LocalDateTime fechaRetiro, LocalDateTime fechaEntrega, double deposito) throws IOException {
 
         // Calcular los días entre fecha de retiro y entrega
         long diasEntrega = ChronoUnit.DAYS.between(fechaRetiro, fechaEntrega);
@@ -83,12 +83,17 @@ public class Almacen {
 
         long diferencia = diasEntrega - diasHoy;
 
-        if(diferencia >= 0){
+        double multaTotal = 0;
+
+        if(diferencia < 0){
+            multaTotal = (diasHoy - diasEntrega) * MULTA_POR_DIA;
+        }
+
+        // Si el depósito cubre la multa, no hay deuda adicional
+        if (multaTotal <= deposito) {
             return 0;
         }
-        else{
-            return (diasHoy - diasEntrega) * MULTA_POR_DIA;
-        }
+        return multaTotal - deposito;
     }
 
     // Recibe los datos del controlador, y de la persistencia para devolver un prestamo
@@ -124,43 +129,5 @@ public class Almacen {
                 alquiler.getDeposito() + "," +
                 alquiler.isCancelado() + "," + false;
     }
-//
-//	public void eliminarCancelados() throws IOException {
-//		alquileres.removeIf(Alquiler::isCancelado);
-//		guardarAlquileres();
-//	}
-//
-//    public String obtenerAlquileresPagados() {
-//        StringBuilder sb = new StringBuilder();
-//        for (Alquiler alquiler : alquileres) {
-//            if (alquiler.isCancelado()) {
-//                sb.append(alquiler.getEstudiante().getNombre() + "," +
-//                        alquiler.getFechaRetiro() + "," +
-//                        alquiler.getFechaEntrega() + "," +
-//                        alquiler.getDeposito() + "," +
-//                        (alquiler.isCancelado() ? "S" : "N")).append("\n");
-//            }
-//        }
-//        return !sb.isEmpty() ? sb.toString() : "No hay alquileres pagados.";
-//    }
-//
-//	private double calcularMulta(Alquiler alquiler) {
-//		long diasRetraso = ChronoUnit.DAYS.between(alquiler.getFechaEntrega(), LocalDateTime.now());
-//		return diasRetraso > 0 ? diasRetraso * MULTA_POR_DIA : 0;
-//	}
-//
-//	private void cargarAlquileres() throws IOException {
-//		for (String linea : archivo.cargarAlquileres()) {
-//			this.alquileres.add(parseCSV(linea));
-//		}
-//	}
-//
-//	private void guardarAlquileres() throws IOException {
-//		List<String> datos = new ArrayList<>();
-//		for (Alquiler alquiler : alquileres) {
-//			datos.add(convertirACSV(alquiler));
-//		}
-//		archivo.sobrescribirAlquileres(datos);
-//	}
 }
 
