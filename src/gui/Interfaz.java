@@ -16,6 +16,7 @@ public class Interfaz {
         }
         catch(IOException e){
             System.out.println("Error al usar el sistema");
+            System.exit(1);
         }
         while (true) {
             System.out.println("\n*** Sistema de Gestión de Préstamos ***");
