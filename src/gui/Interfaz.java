@@ -65,13 +65,11 @@ public class Interfaz {
                         // Usa exclusivamente los alquileres que aún no han sido devueltos
                         List<String[]> alquileres = controlador.obtenerAlquileresActivos();
                         for(String[] alquiler: alquileres){
-                            double multa = controlador.verificarMultas(alquiler);
+                            String[] multados = controlador.verificarMultas(alquiler);
                             // Solo si se pasa del plazo se muestra la multa correspondiente
-                            if(multa > 0){
-                                mostrarAlquileres(alquiler);
-                                System.out.println("Multa: " + multa);
-                                System.out.println("-----------------------------------");
-                            }
+                            mostrarAlquileres(multados);
+                            System.out.println("Multa: " + multados[16]);
+                            System.out.println("-----------------------------------");
                         }
                     }
                     catch(IOException e){
@@ -80,12 +78,12 @@ public class Interfaz {
                     break;
                 // Se pide la fecha en que se realizó un alquiler y la cédula del representante
                 case "5":
-                    try{
-                        buscarAlquiler();
-                    }
-                    catch (IOException e){
-                        System.out.println("Error al buscar alquiler.");
-                    }
+//                    try{
+//                        buscarAlquiler();
+//                    }
+//                    catch (IOException e){
+//                        System.out.println("Error al buscar alquiler.");
+//                    }
                     break;
                 case "6":
                     System.out.println("Saliendo del sistema...");
@@ -174,33 +172,20 @@ public class Interfaz {
         System.out.println("Cancelado: " + alquiler[15]);
     }
 
-    // Pide los datos de cedula y fecha de retiro
-    private void buscarAlquiler() throws IOException {
-        System.out.print("Ingrese la cédula del representante: ");
-        String cedulaRepresentante = scanner.nextLine().trim();
-        System.out.print("Año de retiro (YYYY): ");
-        String aRetiro = scanner.nextLine().trim();
-        System.out.print("Mes de retiro (MM): ");
-        String mesRetiro = scanner.nextLine().trim();
-        System.out.print("Día de retiro (DD): ");
-        String diaRetiro = scanner.nextLine().trim();
-        System.out.print("Hora de retiro (HH): ");
-        String horaRetiro = scanner.nextLine().trim();
-
-        String[] alquiler = controlador.buscarAlquiler(cedulaRepresentante, aRetiro, mesRetiro, diaRetiro, horaRetiro);
-        if(alquiler.length == 0){
-            System.out.println("Error. Alquiler no encontrado");
-            return;
-        }
-        mostrarAlquileres(alquiler);
-        double multa = controlador.verificarMultas(alquiler);
-
-        if(multa > 0){
-            System.out.println("Multa: " + multa);
-        }
-        System.out.print("Pago: " + alquiler[16]);
-        System.out.println("-----------------------------------");
-    }
+//    // Pide los datos de cedula y fecha de retiro
+//    private void buscarAlquiler() throws IOException {
+//        System.out.print("Ingrese la cédula del representante: ");
+//        String cedulaRepresentante = scanner.nextLine().trim();
+//
+//        List<String[]> alquiler = controlador.buscarAlquiler(cedulaRepresentante);
+//
+//        mostrarAlquileres(alquiler);
+//        String[] multados = controlador.verificarMultas(alquiler);
+//        mostrarAlquileres(multados);
+//        System.out.println("Multa: " + multados[16]);
+//        System.out.print("Pago: " + alquiler[16]);
+//        System.out.println("-----------------------------------");
+//    }
 
     // Recibe los datos de cedula y fecha de retiro para pasarlas al controlador
     private void marcarComoPagado() {

@@ -5,37 +5,38 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Almacen {
-	private ArchivoAlquiler archivo;
-	private static final double MULTA_POR_DIA = 2500;
+    private ArchivoAlquiler archivo;
+    private static final double MULTA_POR_DIA = 2500;
 
-	public Almacen() throws IOException {
-		this.archivo = new ArchivoAlquiler();
-	}
+    public Almacen() throws IOException {
+        this.archivo = new ArchivoAlquiler();
+    }
 
     // Recibe los datos ya parseados del controlador, y ahora realiza el proceso para registrar el nuevo alquiler
-	public void registrarAlquiler(String responsableNombre, String direccion, long celular, long cedula,
-								  String estudianteNombre, String grado, String colegio, String talla, int cantidad,
-								  LocalDateTime retiro, LocalDateTime entrega, Double deposito,
-								  String trajeClase, String color, boolean sombrero) throws IOException {
+    public void registrarAlquiler(String responsableNombre, String direccion, long celular, long cedula,
+                                  String estudianteNombre, String grado, String colegio, String talla, int cantidad,
+                                  LocalDateTime retiro, LocalDateTime entrega, Double deposito,
+                                  String trajeClase, String color, boolean sombrero) throws IOException {
 
         // Crea al Responsable ,Estudiante y Traje con los datos necesarios, y luego crea el nuevo alquiler pasandole todos los datos restantes
-		Responsable responsable = new Responsable(responsableNombre, direccion, celular, cedula);
-		Estudiante estudiante = new Estudiante(estudianteNombre, grado, colegio, talla);
-		Traje traje = new Traje();
-		traje.setClase(trajeClase);
-		traje.setColor(color);
-		traje.setSombrero(sombrero);
-		Alquiler alquiler = new Alquiler(responsable, estudiante, traje, cantidad, retiro, entrega, deposito);
+        Responsable responsable = new Responsable(responsableNombre, direccion, celular, cedula);
+        Estudiante estudiante = new Estudiante(estudianteNombre, grado, colegio, talla);
+        Traje traje = new Traje();
+        traje.setClase(trajeClase);
+        traje.setColor(color);
+        traje.setSombrero(sombrero);
+        Alquiler alquiler = new Alquiler(responsable, estudiante, traje, cantidad, retiro, entrega, deposito);
 
         // Se llama a la persistencia para guardar el nuevo traje, no sin antes convertirlo a formato csv
         archivo.guardarAlquiler(convertirACSV(alquiler));
     }
 
     // Obtiene la lista de alquileres activos llamando a la persistencia
-	public List<String[]> obtenerAlquileresActivos() throws IOException {
+    public List<String[]> obtenerAlquileresActivos() throws IOException {
         // Recibe todos los alquileres guardados en el archivo csv
         List<String[]> alquileres = archivo.cargarAlquileres();
         List<String[]> alquileresActivos = new ArrayList<>();
@@ -49,7 +50,7 @@ public class Almacen {
             }
         }
         return alquileresActivos;
-	}
+    }
 
     // Recibe los datos del controlador, y de la persistencia para marcar como pago un prestamo
     public boolean marcarComoPagado(String cedulaResponsable, String fechaRetiro) throws IOException {
@@ -60,6 +61,7 @@ public class Almacen {
             // Verifica si la cédula del responsable y la fecha de entrega coinciden
             if (alquiler[3].equals(cedulaResponsable) && alquiler[12].equals(fechaRetiro)) {
                 alquiler[15] = "true"; // Cambia el estado de pago a "true"
+                alquiler[16] = "true"; // Cambia el estado de entregado a "true"
                 encontrado = true;
                 break;  // Sale del bucle al encontrar el alquiler
             }
@@ -85,7 +87,7 @@ public class Almacen {
 
         double multaTotal = 0;
 
-        if(diferencia < 0){
+        if (diferencia < 0) {
             multaTotal = (diasHoy - diasEntrega) * MULTA_POR_DIA;
         }
 
@@ -96,17 +98,32 @@ public class Almacen {
         return multaTotal - deposito;
     }
 
-    // Recibe los datos del controlador, y de la persistencia para devolver un prestamo
-        public String[] buscarAlquiler(String cedulaResponsable, String fechaRetiro) throws IOException {
+    public String[] obtenerMultado(String[] alquiler, String multaString, double multa) {
+        if (multa == 0) {
+            return null;
+        }
+        // Crear nuevo arreglo con tamaño +1
+        String[] alquilerExtendido = Arrays.copyOf(alquiler, alquiler.length + 1);
+
+        // Agregar el nuevo valor al final
+        alquilerExtendido[alquiler.length] = multaString;
+
+        return alquilerExtendido;
+    }
+
+    public List<String[]> buscarAlquiler(String cedulaResponsable) throws IOException {
         List<String[]> alquileres = archivo.cargarAlquileres();
+        List<String[]> encontrados = new ArrayList<>();
 
         for (String[] alquiler : alquileres) {
-            // Verifica si la cédula del responsable y la fecha de entrega coinciden
-            if (alquiler[3].equals(cedulaResponsable) && alquiler[12].equals(fechaRetiro)) {
-                return alquiler;
+            if (alquiler[3].equals(cedulaResponsable)) {
+                encontrados.add(alquiler);
             }
         }
-        return null;
+        if (encontrados.isEmpty()) {
+            return null;
+        }
+        return encontrados;
     }
 
     // Convierte en formato CSV un Alquiler
