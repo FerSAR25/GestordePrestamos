@@ -4,6 +4,7 @@ import logic.Almacen;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controlador {
@@ -53,7 +54,7 @@ public class Controlador {
 
     // Recibe la lista de alquileres desde la logica y se la regresa a la interfaz
     public List<String[]> obtenerAlquileresActivos() throws IOException {
-        return almacen.obtenerAlquileresActivos();
+        return almacen.reescribirAlquileres(almacen.obtenerAlquileresActivos(), false);
     }
 
     // Metodo para marcar como pagado, pasandole los datos necesarios a la logica
@@ -93,7 +94,7 @@ public class Controlador {
 
             double multa = almacen.verificarMultas(fechaActual, fechaRetiro, fechaEntrega, Double.parseDouble(alquiler[14]));
 
-            return almacen.obtenerMultado(alquiler, String.valueOf(multa), multa);
+            return almacen.reescribir(almacen.obtenerMultado(alquiler, String.valueOf(multa), multa), false);
         }
         catch (Exception e){
             throw new IOException("Error de entrada de datos.");
@@ -103,7 +104,7 @@ public class Controlador {
     // Metodo para buscar un alquiler en específico, pasandole los datos necesarios a la logica
     public List<String[]> buscarAlquiler(String cedulaRepresentante) throws IOException {
         try{
-            return almacen.buscarAlquiler(cedulaRepresentante);
+            return almacen.reescribirAlquileres(almacen.buscarAlquiler(cedulaRepresentante), true);
         }
         catch (Exception e){
             throw new IOException("Error de entrada de datos.");

@@ -99,15 +99,16 @@ public class Almacen {
     }
 
     public String[] obtenerMultado(String[] alquiler, String multaString, double multa) {
-        if (multa == 0) {
-            return null;
-        }
         // Crear nuevo arreglo con tamaño +1
         String[] alquilerExtendido = Arrays.copyOf(alquiler, alquiler.length + 1);
 
-        // Agregar el nuevo valor al final
-        alquilerExtendido[alquiler.length] = multaString;
-
+        if (multa == 0) {
+            alquilerExtendido[alquiler.length] = "0";
+        }
+        else{
+            // Agregar el nuevo valor al final
+            alquilerExtendido[alquiler.length] = multaString;
+        }
         return alquilerExtendido;
     }
 
@@ -145,6 +146,40 @@ public class Almacen {
                 alquiler.getFechaEntrega() + "," +
                 alquiler.getDeposito() + "," +
                 alquiler.isCancelado() + "," + false;
+    }
+
+    // Convierte true y false a texto como si y no
+    public List<String[]> reescribirAlquileres(List<String[]> alquileres, boolean devuelto){
+        List<String[]> nuevosAlquileres = new ArrayList<>();
+
+        for(String[] alquiler: alquileres){
+            nuevosAlquileres.add(reescribir(alquiler, devuelto));
+        }
+        return nuevosAlquileres;
+    }
+
+    public String[] reescribir(String[] alquiler, boolean devuelto){
+        if(devuelto){
+            if (alquiler[16].equalsIgnoreCase("false")) {
+                alquiler[16] = "No";
+            }
+            else if (alquiler[16].equalsIgnoreCase("true")){
+                alquiler[16] = "Si";
+            }
+        }
+        if (alquiler[15].equalsIgnoreCase("false")) {
+            alquiler[15] = "No";
+        }
+        else if (alquiler[15].equalsIgnoreCase("true")){
+            alquiler[15] = "Si";
+        }
+        if (alquiler[10].equalsIgnoreCase("false")) {
+            alquiler[10] = "No";
+        }
+        else if (alquiler[10].equalsIgnoreCase("true")){
+            alquiler[10] = "Si";
+        }
+        return alquiler;
     }
 }
 
