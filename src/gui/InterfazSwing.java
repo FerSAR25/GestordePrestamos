@@ -4,6 +4,7 @@ import control.Controlador;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -13,12 +14,12 @@ import javax.swing.table.TableColumnModel;
 
 public class InterfazSwing extends JFrame {
     Controlador controlador;
-    JPanel menuPanel, registroPanel, mostrarPanel, pagoPanel, multasPanel, buscarPanel;
+    JPanel menuPanel, registroPanel, mostrarPanel, pagoPanel, multasPanel, buscarPanel, resultadoPanel;
     JButton btnRegistrar, btnVer, btnMarcar, btnMultas, btnBuscar, btnSalir, registrar, btnBack, pagar, buscar;
     JTextField nombreResponsable, direccion, celular, cedula, nombreEstudiante, colegio, curso, talla,
             clase, color, cantidad, sombrero, deposito, año, mes, dia, hora;
-    JTable mostrarTable, multasTable;
-    DefaultTableModel mostrarTableModel, multasTableModel;
+    JTable mostrarTable, multasTable, resultadoTable;
+    DefaultTableModel mostrarTableModel, multasTableModel, resultadoTableModel;
     Font btnFont;
     Dimension btnSize;
     boolean columnaDevueltoOculta1 = false;
@@ -33,7 +34,7 @@ public class InterfazSwing extends JFrame {
 
         // Establecer Look and Feel moderno
         try {
-            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception ignored) {}
 
@@ -152,7 +153,7 @@ public class InterfazSwing extends JFrame {
         title.setFont(new Font("Segoe UI", Font.BOLD, 32));
         title.setAlignmentX(Component.CENTER_ALIGNMENT);
         title.setBorder(BorderFactory.createEmptyBorder(20, 0, 30, 0));
-        contenidoPanel.add(title);
+        registroPanel.add(title);
 
         // Campos
         nombreResponsable = new JTextField("Nombre del Responsable");
@@ -353,7 +354,7 @@ public class InterfazSwing extends JFrame {
         mostrarPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Título encabezado
-        JLabel title = new JLabel("Mostrar Alquileres");
+        JLabel title = new JLabel("Mostrar Alquileres Activos");
         title.setFont(new Font("Segoe UI", Font.BOLD, 32));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
@@ -456,25 +457,25 @@ public class InterfazSwing extends JFrame {
         contentPanel.add(cedula);
         contentPanel.add(Box.createVerticalStrut(15));
 
-        año = new JTextField("Año de Entrega");
+        año = new JTextField("Año de Retiro");
         año.setFont(btnFont);
         año.setPreferredSize(btnSize);
         contentPanel.add(año);
         contentPanel.add(Box.createVerticalStrut(15));
 
-        mes = new JTextField("Mes de Entrega");
+        mes = new JTextField("Mes de Retiro");
         mes.setFont(btnFont);
         mes.setPreferredSize(btnSize);
         contentPanel.add(mes);
         contentPanel.add(Box.createVerticalStrut(15));
 
-        dia = new JTextField("Día de Entrega");
+        dia = new JTextField("Día de Retiro");
         dia.setFont(btnFont);
         dia.setPreferredSize(btnSize);
         contentPanel.add(dia);
         contentPanel.add(Box.createVerticalStrut(15));
 
-        hora = new JTextField("Hora de Entrega");
+        hora = new JTextField("Hora de Retiro");
         hora.setFont(btnFont);
         hora.setPreferredSize(btnSize);
         contentPanel.add(hora);
@@ -503,8 +504,9 @@ public class InterfazSwing extends JFrame {
                     dia.getText().trim(), hora.getText().trim()
             );
         });
+        botonPanel.add(Box.createVerticalStrut(5));
         botonPanel.add(pagar);
-        botonPanel.add(Box.createVerticalStrut(10)); // Espacio
+        botonPanel.add(Box.createVerticalStrut(15)); // Espacio
 
         // Botón de regresar
         btnBack.setFont(btnFont);
@@ -594,7 +596,7 @@ public class InterfazSwing extends JFrame {
             String[] alquilerMultado;
             for(String[] alquiler: alquileres) {
                  alquilerMultado = controlador.verificarMultas(alquiler);
-                 if(alquilerMultado != null){
+                 if(!alquilerMultado[alquiler.length].equals("0")){
                      multasTableModel.addRow(alquilerMultado);
                  }
             }
@@ -642,7 +644,7 @@ public class InterfazSwing extends JFrame {
             buscarPanel.removeAll();
         }
 
-        JLabel title = new JLabel("Buscar Alquileres");
+        JLabel title = new JLabel("Buscar Alquiler(es)");
         title.setFont(new Font("Segoe UI", Font.BOLD, 32));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
@@ -654,20 +656,24 @@ public class InterfazSwing extends JFrame {
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(Color.WHITE);
 
+        // Campo de texto
         cedula = new JTextField("Cédula del Responsable");
         cedula.setFont(btnFont);
-        cedula.setPreferredSize(btnSize);
+        cedula.setMaximumSize(new Dimension(400, 40));
+        cedula.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(cedula);
         contentPanel.add(Box.createVerticalStrut(15));
 
         // Botón Buscar
         buscar = new JButton("Buscar");
         buscar.setFont(btnFont);
-        buscar.setPreferredSize(btnSize);
+        buscar.setMaximumSize(new Dimension(400, 50));
+        buscar.setAlignmentX(Component.CENTER_ALIGNMENT);
         contentPanel.add(buscar);
         contentPanel.add(Box.createVerticalStrut(15));
 
         // Botón Volver
+        btnBack.setFont(btnFont);
         btnBack.setMaximumSize(new Dimension(400, 50));
         btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnBack.addActionListener(e -> resetMenu(buscarPanel));
@@ -675,8 +681,7 @@ public class InterfazSwing extends JFrame {
 
         buscarPanel.add(contentPanel, BorderLayout.CENTER);
 
-        // Acción al hacer clic en "Buscar"
-        buscar.addActionListener(e -> realizarBusqueda());
+        buscar.addActionListener(e -> resultadoBusqueda(cedula.getText()));
 
         add(buscarPanel);
 
@@ -685,46 +690,88 @@ public class InterfazSwing extends JFrame {
         repaint();
     }
 
-    private void realizarBusqueda() {
-        if (multasTableModel == null) {
-            String[] cols = {"Responsable", "Dirección", "Celular", "Cédula", "Estudiante", "Grado", "Colegio", "Talla",
-                    "Traje", "Color", "Sombrero", "Cantidad", "Retiro", "Entrega", "Depósito", "Cancelado", "Devuelto", "Multa"};
-            multasTableModel = new DefaultTableModel(cols, 0) {
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
-            multasTable = new JTable(multasTableModel);
-            multasTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            multasTable.setFont(btnFont);
-        } else {
-            multasTableModel.setRowCount(0);
-        }
-
+    public void resultadoBusqueda(String cedula) {
         try {
-            List<String[]> alquileres = controlador.buscarAlquiler(cedula.getText());
+            validarCampo(cedula, "Cédula del Responsable");
+            buscarPanel.setVisible(false);
 
-            if (alquileres == null || alquileres.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No se encontraron alquileres para esa cédula.", "Sin resultados", JOptionPane.INFORMATION_MESSAGE);
-                return;
+            // Crear el panel de mostrar alquileres
+            resultadoPanel = new JPanel();
+            resultadoPanel.setLayout(new BoxLayout(resultadoPanel, BoxLayout.Y_AXIS)); // Botones uno debajo del otro
+            resultadoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            resultadoPanel.setBackground(Color.WHITE);
+            resultadoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+            // Título encabezado
+            JLabel title = new JLabel("Alquiler(es) Encontrado(s)");
+            title.setFont(new Font("Segoe UI", Font.BOLD, 32));
+            title.setHorizontalAlignment(SwingConstants.CENTER);
+            title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+            resultadoPanel.add(title);
+
+            if (resultadoTableModel == null) {
+                String[] cols = {"Responsable", "Dirección", "Celular", "Cédula", "Estudiante", "Grado", "Colegio", "Talla",
+                        "Traje", "Color", "Sombrero", "Cantidad", "Retiro", "Entrega", "Depósito", "Cancelado", "Devuelto", "Multa"};
+                resultadoTableModel = new DefaultTableModel(cols, 0) {
+                    @Override
+                    public boolean isCellEditable(int row, int column) {
+                        return false;
+                    }
+                };
+                resultadoTable = new JTable(resultadoTableModel);
+                resultadoTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+                resultadoTable.setFont(btnFont);
+            } else {
+                resultadoTableModel.setRowCount(0);
             }
 
-            for (String[] alquiler : alquileres) {
-                String[] alquilerMultado = controlador.verificarMultas(alquiler);
-                if (alquilerMultado != null) {
-                    multasTableModel.addRow(alquilerMultado);
+            // Colocar información dentro de la tabla
+            try {
+                // Recibe la lista de los alquileres desde el controlador
+                List<String[]> alquileres = controlador.buscarAlquiler(cedula);
+                if (alquileres.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "No hay alquileres registrados.", "Información", JOptionPane.INFORMATION_MESSAGE);
                 }
+                for (String[] a : alquileres) {
+                    if(a[16].equalsIgnoreCase("Si")){
+                        String[] nuevoAlquiler = Arrays.copyOf(a, a.length + 1);
+                        nuevoAlquiler[a.length] = "0";
+                        resultadoTableModel.addRow(nuevoAlquiler);
+                    }
+                    else{
+                        resultadoTableModel.addRow(controlador.verificarMultas(a));
+                    }
+                }
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error al cargar los alquileres.", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
-            JScrollPane scrollPane = new JScrollPane(multasTable);
-            scrollPane.setPreferredSize(new Dimension(1000, 200));
-            buscarPanel.add(scrollPane, BorderLayout.SOUTH);
-            buscarPanel.revalidate();
-            buscarPanel.repaint();
+            ajustarAnchoColumnas(resultadoTable);
 
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los alquileres.", "Error", JOptionPane.ERROR_MESSAGE);
+            // Agrega la tabla al nuevo panel
+            JScrollPane scroll = new JScrollPane(resultadoTable);
+            resultadoPanel.add(scroll);
+
+            // Botón de volver
+            btnBack.addActionListener(e -> resetMenu(resultadoPanel));
+            btnBack.setFont(btnFont);
+            btnBack.setPreferredSize(btnSize);
+            resultadoPanel.add(btnBack);
+
+            title.setAlignmentX(Component.CENTER_ALIGNMENT);
+            scroll.setAlignmentX(Component.CENTER_ALIGNMENT);
+            btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+            add(resultadoPanel);
+
+            // Recargar el modelo de la interfaz
+            revalidate();
+            repaint();
+        }
+        catch (IOException ex) {
+            // Si falta algo, solo mostrar error
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
