@@ -9,10 +9,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Almacen {
-    private ArchivoAlquiler archivo;
+    private final ArchivoAlquiler archivo;
     private static final double MULTA_POR_DIA = 2500;
 
-    public Almacen() throws IOException {
+    public Almacen() {
         this.archivo = new ArchivoAlquiler();
     }
 
@@ -38,8 +38,7 @@ public class Almacen {
     // Obtiene la lista de alquileres llamando a la persistencia
     public List<String[]> obtenerAlquileres() throws IOException {
         // Recibe todos los alquileres guardados en el archivo csv
-        List<String[]> alquileres = archivo.cargarAlquileres();
-        return alquileres;
+        return archivo.cargarAlquileres();
     }
 
     // Recibe los datos del controlador, y de la persistencia para marcar como pago un prestamo
