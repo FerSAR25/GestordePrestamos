@@ -45,7 +45,7 @@ public class Interfaz {
                 // están guardados en el sistema o archivo (.CSV)
                 case "2":
                     try{
-                        List<String[]> alquileresActivos = controlador.obtenerAlquileresActivos();
+                        List<String[]> alquileresActivos = controlador.obtenerAlquileres();
                         for(String[] alquiler: alquileresActivos){
                             mostrarAlquileres(alquiler);
                             System.out.println("-----------------------------------");
@@ -63,9 +63,9 @@ public class Interfaz {
                 case "4":
                     try{
                         // Usa exclusivamente los alquileres que aún no han sido devueltos
-                        List<String[]> alquileres = controlador.obtenerAlquileresActivos();
+                        List<String[]> alquileres = controlador.obtenerAlquileres();
                         for(String[] alquiler: alquileres){
-                            String[] multados = controlador.verificarMultas(alquiler);
+                            String[] multados = controlador.obtenerMultas(alquiler);
                             // Solo si se pasa del plazo se muestra la multa correspondiente
                             mostrarAlquileres(multados);
                             System.out.println("Multa: " + multados[16]);
@@ -203,7 +203,7 @@ public class Interfaz {
         // Se llama al controlador, y si se recibe un valor true salió correctamente en cambio
         // si es false no se encontró el alquiler, o una excepcion no se pudo abrir el archivo
         try {
-            if (controlador.marcarComoPagado(cedulaRepresentante, aRetiro, mesRetiro, diaRetiro, horaRetiro)) {
+            if (controlador.marcarComoPagado(cedulaRepresentante, aRetiro)) {
                 System.out.println("El alquiler ha sido marcado como pagado.");
             } else {
                 System.out.println("No se encontró el alquiler.");

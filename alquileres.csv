@@ -5,7 +5,7 @@ Jose,Carrera 15 #40-50,3109876543,4,Valeria,601,La Esperanza,14,Tango,Negro,true
 Andrea,Calle 80 #12-34,3204567891,5,Santiago,702,Los Andes,16,Flamenco,Azul,false,2,2025-05-05T08:00,2025-05-12T14:00,40000,true,false
 Ferney,Cra 30,3029328,6,Santy,402,Sagrada Familia,8,Clásico,Marron,false,1,2025-04-27T12:00,2025-05-01T10:00,1000.0,false,false
 Isabella,Calle 14,371821,7,Leonardo,102,La Presentación,4,Típico,Dorado,true,3,2025-04-27T14:00,2025-05-25T12:00,5000.0,false,false
-Laura,Av circ 12,322324224,8,Sebastian,902,Colegio 2,16,Normal,Rojo,false,1,2025-04-27T16:00,2025-04-30T06:00,1000.0,false,false
+Laura,Av circ 12,322324224,8,Sebastian,902,Colegio 2,16,Normal,Rojo,false,1,2025-04-27T16:00,2025-04-30T06:00,1000.0,true,true
 Pepe,peponcio 34,1234,9,Pepito,201,Pepelandia,4,Tango,Rosado,false,5,2025-04-27T16:00,2025-06-01T12:00,10000.0,false,false
 ss,ss,22,22,ss,22,ss,2,ss,ss,false,2,2025-04-27T16:00,2025-04-27T05:00,1000.0,false,false
-Yuliet,Carrera 2,2372323,10,Christopher,301,Salesiano,8,Cumbia,Blanco,true,1,2025-04-27T17:00,2025-05-28T05:00,10000.0,false,false
+Yuliet,Carrera 2,2372323,10,Christopher,301,Salesiano,8,Cumbia,Blanco,true,1,2025-04-27T17:00,2025-05-28T05:00,10000.0,true,true

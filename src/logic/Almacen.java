@@ -35,21 +35,11 @@ public class Almacen {
         archivo.guardarAlquiler(convertirACSV(alquiler));
     }
 
-    // Obtiene la lista de alquileres activos llamando a la persistencia
-    public List<String[]> obtenerAlquileresActivos() throws IOException {
+    // Obtiene la lista de alquileres llamando a la persistencia
+    public List<String[]> obtenerAlquileres() throws IOException {
         // Recibe todos los alquileres guardados en el archivo csv
         List<String[]> alquileres = archivo.cargarAlquileres();
-        List<String[]> alquileresActivos = new ArrayList<>();
-
-        // Filtra entre todos los alquileres aquellos que no han sido
-        // devueltos y los guarda en una nueva lista de arrays
-        for (String[] alquiler : alquileres) {
-            // Verifica si la última posición es "true"
-            if (alquiler[16].equalsIgnoreCase("false")) {
-                alquileresActivos.add(alquiler);
-            }
-        }
-        return alquileresActivos;
+        return alquileres;
     }
 
     // Recibe los datos del controlador, y de la persistencia para marcar como pago un prestamo
@@ -75,7 +65,7 @@ public class Almacen {
         }
     }
 
-    public double verificarMultas(LocalDateTime fechaActual, LocalDateTime fechaRetiro, LocalDateTime fechaEntrega, double deposito) throws IOException {
+    public double verificarMultas(LocalDateTime fechaActual, LocalDateTime fechaRetiro, LocalDateTime fechaEntrega, double deposito) {
 
         // Calcular los días entre fecha de retiro y entrega
         long diasEntrega = ChronoUnit.DAYS.between(fechaRetiro, fechaEntrega);
@@ -149,23 +139,21 @@ public class Almacen {
     }
 
     // Convierte true y false a texto como si y no
-    public List<String[]> reescribirAlquileres(List<String[]> alquileres, boolean devuelto){
+    public List<String[]> reescribirAlquileres(List<String[]> alquileres){
         List<String[]> nuevosAlquileres = new ArrayList<>();
 
         for(String[] alquiler: alquileres){
-            nuevosAlquileres.add(reescribir(alquiler, devuelto));
+            nuevosAlquileres.add(reescribir(alquiler));
         }
         return nuevosAlquileres;
     }
 
-    public String[] reescribir(String[] alquiler, boolean devuelto){
-        if(devuelto){
-            if (alquiler[16].equalsIgnoreCase("false")) {
-                alquiler[16] = "No";
-            }
-            else if (alquiler[16].equalsIgnoreCase("true")){
-                alquiler[16] = "Si";
-            }
+    public String[] reescribir(String[] alquiler){
+        if (alquiler[16].equalsIgnoreCase("false")) {
+            alquiler[16] = "No";
+        }
+        else if (alquiler[16].equalsIgnoreCase("true")){
+            alquiler[16] = "Si";
         }
         if (alquiler[15].equalsIgnoreCase("false")) {
             alquiler[15] = "No";

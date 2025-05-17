@@ -2,34 +2,32 @@ package gui;
 
 import control.Controlador;
 
-import java.awt.*;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
+import java.awt.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InterfazSwing extends JFrame {
     Controlador controlador;
-    JPanel menuPanel, registroPanel, mostrarPanel, pagoPanel, multasPanel, buscarPanel, resultadoPanel;
-    JButton btnRegistrar, btnVer, btnMarcar, btnMultas, btnBuscar, btnSalir, registrar, btnBack, pagar, buscar;
+    JPanel principalPanel, menuPanel, registroPanel, mostrarPanel;
+    JButton btnRegistrar, btnVer, btnSalir, registrar, btnBack;
     JTextField nombreResponsable, direccion, celular, cedula, nombreEstudiante, colegio, curso, talla,
-            clase, color, cantidad, sombrero, deposito, año, mes, dia, hora;
-    JTable mostrarTable, multasTable, resultadoTable;
-    DefaultTableModel mostrarTableModel, multasTableModel, resultadoTableModel;
+            clase, color, cantidad, sombrero, deposito, year, month, day, hour;
+    JTable mostrarTable;
+    DefaultTableModel mostrarTableModel;
     Font btnFont;
     Dimension btnSize;
-    boolean columnaDevueltoOculta1 = false;
-    boolean columnaDevueltoOculta2 = false;
+    JLabel labelImagen;
 
     public InterfazSwing(){
         // Configuración de la ventana
         setTitle("Gestor de Préstamos");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(1024, 600));       // Tamaño mínimo
+        setSize(new Dimension(1080, 720));       // Tamaño mínimo
         setLocationRelativeTo(null);                    // Centrar en pantalla
 
         // Establecer Look and Feel moderno
@@ -40,7 +38,7 @@ public class InterfazSwing extends JFrame {
 
         btnBack = new JButton("Volver");
         btnFont = new Font("Segoe UI", Font.PLAIN, 18);
-        btnSize = new Dimension(250, 50);
+        btnSize = new Dimension(250, 70);
     }
 
     public void vista(){
@@ -55,6 +53,8 @@ public class InterfazSwing extends JFrame {
     }
 
     private void initGUI() {
+        principalPanel = new JPanel();
+        principalPanel.setLayout(new BorderLayout());
         // Menú Principal con botones grandes y espaciados
         menuPanel = new JPanel();
         menuPanel.setLayout(new GridLayout(8, 1, 5, 5)); // Botones uno debajo del otro
@@ -63,51 +63,46 @@ public class InterfazSwing extends JFrame {
         menuPanel.setBackground(Color.WHITE);
         menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
+        ImageIcon icon = new ImageIcon("imagenes/trajes.jpg");
+        labelImagen = new JLabel(icon);
+
         // Título encabezado
         JLabel title = new JLabel("Gestor de Préstamos");
         title.setFont(new Font("Segoe UI", Font.BOLD, 32));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+        principalPanel.add(title, BorderLayout.NORTH);
+
+        // Título menu
+        JLabel subtitle = new JLabel("Menu");
+        subtitle.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        subtitle.setHorizontalAlignment(SwingConstants.CENTER);
+        subtitle.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
         menuPanel.add(title, BorderLayout.NORTH);
 
         // Botones del menu principal
         btnRegistrar = new JButton("Registrar Alquiler");
-        btnVer = new JButton("Mostrar Alquileres");
-        btnMarcar = new JButton("Pagar y Entregar");
-        btnMultas = new JButton("Mostrar Multas");
-        btnBuscar = new JButton("Buscar Alquileres");
+        btnVer = new JButton("Alquileres Activos");
         btnSalir = new JButton("Salir");
 
         // Estilo de los botones
         btnRegistrar.setFont(btnFont);
         btnVer.setFont(btnFont);
-        btnMarcar.setFont(btnFont);
-        btnMultas.setFont(btnFont);
-        btnBuscar.setFont(btnFont);
         btnSalir.setFont(btnFont);
 
         // Ajustar tamaño de los botones
         btnRegistrar.setPreferredSize(btnSize);
         btnVer.setPreferredSize(btnSize);
-        btnMarcar.setPreferredSize(btnSize);
-        btnMultas.setPreferredSize(btnSize);
-        btnBuscar.setPreferredSize(btnSize);
         btnSalir.setPreferredSize(btnSize);
 
         // Alinear botones al centro
         btnRegistrar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnVer.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnMarcar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnMultas.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnBuscar.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnSalir.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Agregar las acciones a los botones
         btnRegistrar.addActionListener(e -> registrarAlquiler());
         btnVer.addActionListener(e -> mostrarAlquileres());
-        btnMarcar.addActionListener(e -> marcarComoPagado());
-        btnMultas.addActionListener(e -> mostrarMultas());
-        btnBuscar.addActionListener(e -> buscarAlquiler());
         btnSalir.addActionListener(e -> System.exit(0));
 
         // Espaciado entre los botones
@@ -116,23 +111,29 @@ public class InterfazSwing extends JFrame {
         menuPanel.add(Box.createVerticalStrut(15));  // Espacio entre botones
         menuPanel.add(btnVer);
         menuPanel.add(Box.createVerticalStrut(15));
-        menuPanel.add(btnMarcar);
-        menuPanel.add(Box.createVerticalStrut(15));
-        menuPanel.add(btnMultas);
-        menuPanel.add(Box.createVerticalStrut(15));
-        menuPanel.add(btnBuscar);
-        menuPanel.add(Box.createVerticalStrut(15));
         menuPanel.add(btnSalir);
 
-        add(menuPanel);
+        principalPanel.add(menuPanel, BorderLayout.WEST);
+        principalPanel.add(labelImagen);
+        add(principalPanel);
         setVisible(true);
     }
 
     // Funcion que pide datos para permitir registrar los alquileres
     private void registrarAlquiler() {
+        if(mostrarPanel != null && mostrarPanel.isVisible()){
+            resetMenu(mostrarPanel);
+        }
+        if(registroPanel != null && registroPanel.isVisible()){
+            resetMenu(registroPanel);
+            return;
+        }
+        if(labelImagen.isVisible()){
+            labelImagen.setVisible(false);
+        }
         // Crear el panel principal de registro
         registroPanel = new JPanel();
-        registroPanel.setLayout(new BorderLayout()); // Cambia a BorderLayout
+        registroPanel.setLayout(new BoxLayout(registroPanel, BoxLayout.Y_AXIS));
         registroPanel.setBackground(Color.WHITE);
         registroPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
 
@@ -140,9 +141,6 @@ public class InterfazSwing extends JFrame {
         if (registroPanel.getComponentCount() != 0) {
             registroPanel.removeAll();
         }
-
-        // Se esconde el panel principal
-        menuPanel.setVisible(false);
 
         // Panel que contendrá todos los campos
         JPanel contenidoPanel = new JPanel();
@@ -198,18 +196,18 @@ public class InterfazSwing extends JFrame {
         deposito.setFont(btnFont);
         deposito.setPreferredSize(btnSize);
 
-        año = new JTextField("Año de Entrega");
-        año.setFont(btnFont);
-        año.setPreferredSize(btnSize);
-        mes = new JTextField("Mes de Entrega");
-        mes.setFont(btnFont);
-        mes.setPreferredSize(btnSize);
-        dia = new JTextField("Día de Entrega");
-        dia.setFont(btnFont);
-        dia.setPreferredSize(btnSize);
-        hora = new JTextField("Hora de Entrega");
-        hora.setFont(btnFont);
-        hora.setPreferredSize(btnSize);
+        year = new JTextField("Año de Entrega");
+        year.setFont(btnFont);
+        year.setPreferredSize(btnSize);
+        month = new JTextField("Mes de Entrega");
+        month.setFont(btnFont);
+        month.setPreferredSize(btnSize);
+        day = new JTextField("Día de Entrega");
+        day.setFont(btnFont);
+        day.setPreferredSize(btnSize);
+        hour = new JTextField("Hora de Entrega");
+        hour.setFont(btnFont);
+        hour.setPreferredSize(btnSize);
 
         registrar = new JButton("Registrar");
         registrar.setFont(btnFont);
@@ -243,13 +241,13 @@ public class InterfazSwing extends JFrame {
         contenidoPanel.add(Box.createVerticalStrut(15));
         contenidoPanel.add(deposito);
         contenidoPanel.add(Box.createVerticalStrut(15));
-        contenidoPanel.add(año);
+        contenidoPanel.add(year);
         contenidoPanel.add(Box.createVerticalStrut(15));
-        contenidoPanel.add(mes);
+        contenidoPanel.add(month);
         contenidoPanel.add(Box.createVerticalStrut(15));
-        contenidoPanel.add(dia);
+        contenidoPanel.add(day);
         contenidoPanel.add(Box.createVerticalStrut(15));
-        contenidoPanel.add(hora);
+        contenidoPanel.add(hour);
         contenidoPanel.add(Box.createVerticalStrut(15));
 
         // Botón registrar
@@ -263,18 +261,9 @@ public class InterfazSwing extends JFrame {
                     colegio.getText().trim(), talla.getText().trim(),
                     cantidad.getText().trim(), deposito.getText().trim(),
                     clase.getText().trim(), color.getText().trim(), sombrero.getText().trim(),
-                    año.getText().trim(), mes.getText().trim(), dia.getText().trim(), hora.getText().trim()
+                    year.getText().trim(), month.getText().trim(), day.getText().trim(), hour.getText().trim()
             );
         });
-        contenidoPanel.add(registrar);
-
-        // Botón volver
-        btnBack.setMaximumSize(new Dimension(400, 50));
-        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnBack.addActionListener(e -> resetMenu(registroPanel));
-        contenidoPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        contenidoPanel.add(btnBack);
-
         // Ahora contenidoPanel lo metemos en un JScrollPane
         JScrollPane scrollPane = new JScrollPane(contenidoPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -284,9 +273,19 @@ public class InterfazSwing extends JFrame {
         // Finalmente el scrollPane se agrega dentro de registroPanel
         registroPanel.add(scrollPane, BorderLayout.CENTER);
 
+        registroPanel.add(registrar);
+
+        // Botón volver
+        btnBack.setMaximumSize(new Dimension(400, 50));
+        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnBack.addActionListener(e -> resetMenu(registroPanel));
+        registroPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        registroPanel.add(btnBack);
+
         // Mostramos
         registroPanel.setVisible(true);
         add(registroPanel);
+        principalPanel.add(registroPanel);
         revalidate();
         repaint();
     }
@@ -295,7 +294,7 @@ public class InterfazSwing extends JFrame {
                          String nombreEstudiante, String grado, String colegio, String talla,
                          String cantidad, String deposito,
                          String trajeClase, String color, String sombrero,
-                         String año, String mes, String dia, String hora) {
+                         String year, String month, String day, String hour) {
         try {
             if (sombrero.trim().equalsIgnoreCase("s")) {
                 sombrero = "true";
@@ -320,16 +319,16 @@ public class InterfazSwing extends JFrame {
             validarCampo(sombrero, "Sombrero (S/N)");
             validarCampo(deposito, "Depósito");
 
-            validarCampo(año, "Año de Entrega");
-            validarCampo(mes, "Mes de Entrega");
-            validarCampo(dia, "Día de Entrega");
-            validarCampo(hora, "Hora de Entrega");
+            validarCampo(year, "Año de Entrega");
+            validarCampo(month, "Mes de Entrega");
+            validarCampo(day, "Día de Entrega");
+            validarCampo(hour, "Hora de Entrega");
 
             // Registro
             controlador.registrarAlquiler(nombreResponsable, direccion, celular,
                     cedula, nombreEstudiante, grado, colegio, talla,
                     cantidad, deposito, trajeClase, color, sombrero,
-                    año, mes, dia, hora
+                    year, month, day, hour
             );
             JOptionPane.showMessageDialog(this, "Alquiler registrado exitosamente.");
 
@@ -343,437 +342,364 @@ public class InterfazSwing extends JFrame {
     }
 
     public void mostrarAlquileres() {
-        menuPanel.setVisible(false);
+        if (registroPanel != null && registroPanel.isVisible()) {
+            resetMenu(registroPanel);
+        }
+        if(mostrarPanel != null && mostrarPanel.isVisible()){
+            resetMenu(mostrarPanel);
+            return;
+        }
+        if (labelImagen.isVisible()) {
+            labelImagen.setVisible(false);
+        }
 
-        // Crear el panel de mostrar alquileres
         mostrarPanel = new JPanel();
-        mostrarPanel.setLayout(new BoxLayout(mostrarPanel, BoxLayout.Y_AXIS)); // Botones uno debajo del otro
+        mostrarPanel.setLayout(new BoxLayout(mostrarPanel, BoxLayout.Y_AXIS));
         mostrarPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
         mostrarPanel.setBackground(Color.WHITE);
         mostrarPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        // Título encabezado
-        JLabel title = new JLabel("Mostrar Alquileres Activos");
+        JLabel title = new JLabel("Mostrar Alquileres");
         title.setFont(new Font("Segoe UI", Font.BOLD, 32));
         title.setHorizontalAlignment(SwingConstants.CENTER);
         title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
         mostrarPanel.add(title);
 
+        JCheckBox chkEntregados = new JCheckBox("Mostrar no entregados");
+        chkEntregados.setFont(new Font("Arial", Font.PLAIN, 14));
+        chkEntregados.setBackground(Color.WHITE);
+        chkEntregados.setFocusable(false);
+
+        JComboBox<String> comboFiltro = new JComboBox<>(new String[]{
+                "Cédula", "Responsable", "Estudiante", "Fecha de Retiro", "Fecha de Entrega"
+        });
+        comboFiltro.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        JTextField campoBusqueda = new JTextField(20);
+        campoBusqueda.setFont(new Font("Arial", Font.PLAIN, 14));
+
         if (mostrarTableModel == null) {
             String[] cols = {"Responsable", "Dirección", "Celular", "Cédula", "Estudiante", "Grado", "Colegio", "Talla",
-                    "Traje", "Color", "Sombrero", "Cantidad", "Retiro", "Entrega", "Depósito", "Cancelado", "Devuelto"};
+                    "Traje", "Color", "Sombrero", "Cantidad", "Retiro", "Entrega", "Depósito", "Cancelado", "Devuelto", "Multa", "Entregar"};
             mostrarTableModel = new DefaultTableModel(cols, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    return false;
+                    return column == getColumnCount() - 1;
                 }
             };
             mostrarTable = new JTable(mostrarTableModel);
             mostrarTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            mostrarTable.setFont(btnFont);
+            mostrarTable.setFont(new Font("Arial", Font.PLAIN, 13));
+
+            mostrarTable.getColumn("Entregar").setCellRenderer(new ButtonRenderer());
+            mostrarTable.getColumn("Entregar").setCellEditor(new ButtonEditor(new JCheckBox(), mostrarTable));
         } else {
             mostrarTableModel.setRowCount(0);
         }
 
-        // Colocar información dentro de la tabla
+        JScrollPane scrollTabla = new JScrollPane(mostrarTable);
+//        scrollTabla.setPreferredSize(new Dimension(900, 300));
+
+        List<String[]> alquileres;
         try {
-            // Recibe la lista de los alquileres desde el controlador
-            List<String[]> alquileres = controlador.obtenerAlquileresActivos();
+            alquileres = controlador.obtenerAlquileres();
             if (alquileres.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "No hay alquileres registrados.", "Información", JOptionPane.INFORMATION_MESSAGE);
             }
-            for (String[] a : alquileres) {
-                mostrarTableModel.addRow(a);
-            }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Error al cargar los alquileres.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
         }
 
-        // Ocultar columna "Devuelto" (índice 16)
-        if (!columnaDevueltoOculta1) {
-            TableColumnModel columnModel = mostrarTable.getColumnModel();
-            TableColumn columnaOculta = columnModel.getColumn(16);
-            columnModel.removeColumn(columnaOculta);
-            columnaDevueltoOculta1 = true;
-        }
+        List<String[]> finalAlquileres = alquileres;
 
-        ajustarAnchoColumnas(mostrarTable);
+        campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                aplicarFiltros(finalAlquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable);
+            }
 
-        // Agrega la tabla al nuevo panel
-        JScrollPane scroll = new JScrollPane(mostrarTable);
-        mostrarPanel.add(scroll);
+            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                aplicarFiltros(finalAlquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable);
+            }
 
-        // Botón de volver
+            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                aplicarFiltros(finalAlquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable);
+            }
+        });
+
+        comboFiltro.addActionListener(e ->
+                aplicarFiltros(finalAlquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable)
+        );
+
+        chkEntregados.addActionListener(e ->
+                aplicarFiltros(finalAlquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable)
+        );
+
+        JPanel filtrosPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        filtrosPanel.setBackground(Color.WHITE);
+        filtrosPanel.add(new JLabel("Buscar por:"));
+        filtrosPanel.add(comboFiltro);
+        filtrosPanel.add(campoBusqueda);
+        filtrosPanel.add(chkEntregados);
+
+        mostrarPanel.add(filtrosPanel);
+        mostrarPanel.add(scrollTabla);
+
+        // Botón volver
         btnBack.addActionListener(e -> resetMenu(mostrarPanel));
-        btnBack.setFont(btnFont);
-        btnBack.setPreferredSize(btnSize);
+        btnBack.setFont(new Font("Arial", Font.PLAIN, 14));
+        btnBack.setPreferredSize(new Dimension(120, 30));
+        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
+        mostrarPanel.add(Box.createVerticalStrut(15));
         mostrarPanel.add(btnBack);
 
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        scroll.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
+        principalPanel.add(mostrarPanel);
 
-        add(mostrarPanel);
+        // Cargar datos al iniciar
+        aplicarFiltros(alquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable);
 
-        // Recargar el modelo de la interfaz
         revalidate();
         repaint();
     }
 
-    // Recibe los datos de cedula y fecha de retiro para pasarlas al controlador
-    private void marcarComoPagado() {
-        // Crear el panel principal de pagar alquileres
-        pagoPanel = new JPanel();
-        pagoPanel.setLayout(new BorderLayout());
+    private void aplicarFiltros(List<String[]> alquileres, JTextField campoBusqueda, JComboBox<String> comboFiltro,
+                                JCheckBox chkNoEntregados, JTable mostrarTable) {
 
-        // Si ya tiene información se elimina
-        if (pagoPanel.getComponentCount() != 0) {
-            pagoPanel.removeAll();
+        String texto = campoBusqueda.getText().trim().toLowerCase();
+        int indice = comboFiltro.getSelectedIndex();
+
+        List<String[]> filtrados = new ArrayList<>();
+
+        for (String[] alq : alquileres) {
+            boolean coincide = false;
+
+            if (texto.isEmpty()) {
+                coincide = true;
+            } else {
+                String campo = switch (indice) {
+                    case 0 -> alq[3]; // Cédula
+                    case 1 -> alq[0]; // Responsable
+                    case 2 -> alq[4]; // Estudiante
+                    case 3 -> alq[12]; // Retiro
+                    case 4 -> alq[13];
+                    default -> ""; // Entrega
+                };
+
+                if (campo != null && campo.toLowerCase().contains(texto)) {
+                    coincide = true;
+                }
+            }
+            if (coincide) {
+                filtrados.add(alq);
+            }
         }
 
-        pagoPanel.setBackground(Color.WHITE);
-        pagoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        // Título encabezado
-        JLabel title = new JLabel("Pagar Y Entregar Alquiler");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
-        pagoPanel.add(title, BorderLayout.NORTH); // Se agrega en la parte superior
-
-        // Se esconde el panel principal
-        menuPanel.setVisible(false);
-
-        // Crear un panel interno con BoxLayout para apilar los componentes verticalmente
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS)); // Layout vertical
-        contentPanel.setBackground(Color.WHITE);
-
-        // Crea los campos de texto
-        cedula = new JTextField("Cédula del Responsable");
-        cedula.setFont(btnFont);
-        cedula.setPreferredSize(btnSize);
-        contentPanel.add(cedula);
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        año = new JTextField("Año de Retiro");
-        año.setFont(btnFont);
-        año.setPreferredSize(btnSize);
-        contentPanel.add(año);
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        mes = new JTextField("Mes de Retiro");
-        mes.setFont(btnFont);
-        mes.setPreferredSize(btnSize);
-        contentPanel.add(mes);
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        dia = new JTextField("Día de Retiro");
-        dia.setFont(btnFont);
-        dia.setPreferredSize(btnSize);
-        contentPanel.add(dia);
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        hora = new JTextField("Hora de Retiro");
-        hora.setFont(btnFont);
-        hora.setPreferredSize(btnSize);
-        contentPanel.add(hora);
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        // Crear el JScrollPane para hacer scroll si el contenido es grande
-        JScrollPane scrollPane = new JScrollPane(contentPanel);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS); // Barra de desplazamiento siempre visible
-
-        // Agregar el JScrollPane al centro del panel principal
-        pagoPanel.add(scrollPane, BorderLayout.CENTER);
-
-        // Crear el panel inferior para los botones
-        JPanel botonPanel = new JPanel();
-        botonPanel.setLayout(new BoxLayout(botonPanel, BoxLayout.Y_AXIS));
-        botonPanel.setBackground(Color.WHITE);
-
-        // Botón para pagar
-        pagar = new JButton("Pagar y Entregar");
-        pagar.setFont(btnFont);
-        pagar.setPreferredSize(btnSize);
-        pagar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        pagar.addActionListener(e -> {
-            marcarPago(
-                    cedula.getText().trim(), año.getText().trim(), mes.getText().trim(),
-                    dia.getText().trim(), hora.getText().trim()
-            );
-        });
-        botonPanel.add(Box.createVerticalStrut(5));
-        botonPanel.add(pagar);
-        botonPanel.add(Box.createVerticalStrut(15)); // Espacio
-
-        // Botón de regresar
-        btnBack.setFont(btnFont);
-        btnBack.setPreferredSize(btnSize);
-        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnBack.addActionListener(e -> resetMenu(pagoPanel));
-        botonPanel.add(btnBack);
-
-        // Agregar el panel de botones en la parte inferior del panel principal
-        pagoPanel.add(botonPanel, BorderLayout.SOUTH);
-
-        // Mostrar el panel
-        pagoPanel.setVisible(true);
-        add(pagoPanel);
-        revalidate();
-        repaint();
+        try {
+            actualizarTabla(filtrados, chkNoEntregados.isSelected());
+            ajustarAnchoColumnas(mostrarTable);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error al actualizar los alquileres.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    private void marcarPago(String cedula, String año, String mes, String dia, String hora){
+
+    private void marcarPago(String cedula, String fecha){
         try {
-            // Validaciones
-            validarCampo(cedula, "Cédula del Responsable");
-
-            validarCampo(año, "Año de Retiro");
-            validarCampo(mes, "Mes de Retiro");
-            validarCampo(dia, "Día de Retiro");
-            validarCampo(hora, "Hora de Retiro");
-
             // Registro
-            if(controlador.marcarComoPagado(cedula, año, mes, dia, hora)){
+            if(controlador.marcarComoPagado(cedula, fecha)){
                 JOptionPane.showMessageDialog(this, "Alquiler fue pagado y entregado exitosamente.");
+                resetMenu(mostrarPanel);
             }
             else{
                 throw new IOException("No se encontró el alquiler");
             }
-
-            // Cuando todas las cosas esten correctas, se vuelve al menú principal
-            resetMenu(pagoPanel);
-
         } catch (Exception ex) {
             // Si falta algo, solo mostrar error
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void mostrarMultas() {
-        menuPanel.setVisible(false);
+    public void actualizarTabla(List<String[]> alquileresFiltrados, boolean soloNoEntregados) throws IOException {
+        mostrarTableModel.setRowCount(0); // Limpiar la tabla
+//        botonesPanel.removeAll(); // Limpiar botones anteriores
 
-        // Crear el panel de mostrar alquileres
-        multasPanel = new JPanel();
-        multasPanel.setLayout(new BoxLayout(multasPanel, BoxLayout.Y_AXIS)); // Botones uno debajo del otro
-        multasPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        for (String[] alquiler : alquileresFiltrados) {
+            boolean yaEntregado = alquiler[16].trim().equalsIgnoreCase("Si");
+            if (soloNoEntregados && yaEntregado) continue;
 
-        multasPanel.setBackground(Color.WHITE);
-        multasPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        // Título encabezado
-        JLabel title = new JLabel("Mostrar Multas");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
-        multasPanel.add(title);
-
-        if (multasTableModel == null) {
-            String[] cols = {"Responsable", "Dirección", "Celular", "Cédula", "Estudiante", "Grado", "Colegio", "Talla",
-                    "Traje", "Color", "Sombrero", "Cantidad", "Retiro", "Entrega", "Depósito", "Cancelado", "Devuelto", "Multa"};
-            multasTableModel = new DefaultTableModel(cols, 0) {
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
-            multasTable = new JTable(multasTableModel);
-            multasTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            multasTable.setFont(btnFont);
-        } else {
-            multasTableModel.setRowCount(0);
+            mostrarTableModel.addRow(alquiler);
         }
+//            JButton btnEntregar = new JButton("Entregar");
+//            btnEntregar.setFont(new Font("Arial", Font.PLAIN, 12));
+//            btnEntregar.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        // Colocar información dentro de la tabla
-        try {
-            List<String[]> alquileres = controlador.obtenerAlquileresActivos();
-            if (alquileres.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No hay alquileres registrados.", "Información", JOptionPane.INFORMATION_MESSAGE);
-            }
+//            final int rowIndex = mostrarTableModel.getRowCount() - 1;
+//
+//            if (yaEntregado){ btnEntregar.setEnabled(false);}
+//
+//            btnEntregar.addActionListener(e -> {
+//                String entregado = ((String) mostrarTable.getValueAt(rowIndex, 16)).trim();
+//                if (entregado.equalsIgnoreCase("Si")) {
+//                    JOptionPane.showMessageDialog(null, "Este alquiler ya fue entregado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+//                    return;
+//                }
+//
+//                String[] filaDatos = new String[mostrarTable.getColumnCount()];
+//                for (int col = 0; col < filaDatos.length; col++) {
+//                    filaDatos[col] = (String) mostrarTable.getValueAt(rowIndex, col);
+//                }
+//
+//                marcarPago(filaDatos[3], filaDatos[12]); // Cédula y fecha de retiro
+//                mostrarAlquileres(); // Volver a recargar
+//            });
+//
+//            botonesPanel.add(Box.createVerticalStrut(5));
+//            botonesPanel.add(btnEntregar);
+//        }
 
-            String[] alquilerMultado;
-            for(String[] alquiler: alquileres) {
-                 alquilerMultado = controlador.verificarMultas(alquiler);
-                 if(!alquilerMultado[alquiler.length].equals("0")){
-                     multasTableModel.addRow(alquilerMultado);
-                 }
-            }
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los alquileres.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
-
-        // Ocultar columna "Devuelto" (índice 16)
-        if (!columnaDevueltoOculta2) {
-            TableColumnModel columnModel = multasTable.getColumnModel();
-            TableColumn columnaOculta = columnModel.getColumn(16);
-            columnModel.removeColumn(columnaOculta);
-            columnaDevueltoOculta2 = true;
-        }
-
-        ajustarAnchoColumnas(multasTable);
-
-        // Agrega la tabla al nuevo panel
-        JScrollPane scroll = new JScrollPane(multasTable);
-        multasPanel.add(scroll);
-
-        // Botón de volver
-        btnBack.addActionListener(e -> resetMenu(multasPanel));
-        btnBack.setFont(btnFont);
-        btnBack.setPreferredSize(btnSize);
-        multasPanel.add(btnBack);
-
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        scroll.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        add(multasPanel);
-
-        // Recargar el modelo de la interfaz
-        revalidate();
-        repaint();
+//        botonesPanel.revalidate();
+//        botonesPanel.repaint();
     }
 
-    private void buscarAlquiler() {
-        buscarPanel = new JPanel(new BorderLayout());
-        buscarPanel.setBackground(Color.WHITE);
-        buscarPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-        if (buscarPanel.getComponentCount() != 0) {
-            buscarPanel.removeAll();
-        }
-
-        JLabel title = new JLabel("Buscar Alquiler(es)");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        title.setHorizontalAlignment(SwingConstants.CENTER);
-        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
-        buscarPanel.add(title, BorderLayout.NORTH);
-
-        menuPanel.setVisible(false);
-
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBackground(Color.WHITE);
-
-        // Campo de texto
-        cedula = new JTextField("Cédula del Responsable");
-        cedula.setFont(btnFont);
-        cedula.setMaximumSize(new Dimension(400, 40));
-        cedula.setAlignmentX(Component.CENTER_ALIGNMENT);
-        contentPanel.add(cedula);
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        // Botón Buscar
-        buscar = new JButton("Buscar");
-        buscar.setFont(btnFont);
-        buscar.setMaximumSize(new Dimension(400, 50));
-        buscar.setAlignmentX(Component.CENTER_ALIGNMENT);
-        contentPanel.add(buscar);
-        contentPanel.add(Box.createVerticalStrut(15));
-
-        // Botón Volver
-        btnBack.setFont(btnFont);
-        btnBack.setMaximumSize(new Dimension(400, 50));
-        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
-        btnBack.addActionListener(e -> resetMenu(buscarPanel));
-        contentPanel.add(btnBack);
-
-        buscarPanel.add(contentPanel, BorderLayout.CENTER);
-
-        buscar.addActionListener(e -> resultadoBusqueda(cedula.getText()));
-
-        add(buscarPanel);
-
-        // Recargar el modelo de la interfaz
-        revalidate();
-        repaint();
-    }
-
-    public void resultadoBusqueda(String cedula) {
-        try {
-            validarCampo(cedula, "Cédula del Responsable");
-            buscarPanel.setVisible(false);
-
-            // Crear el panel de mostrar alquileres
-            resultadoPanel = new JPanel();
-            resultadoPanel.setLayout(new BoxLayout(resultadoPanel, BoxLayout.Y_AXIS)); // Botones uno debajo del otro
-            resultadoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-            resultadoPanel.setBackground(Color.WHITE);
-            resultadoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-            // Título encabezado
-            JLabel title = new JLabel("Alquiler(es) Encontrado(s)");
-            title.setFont(new Font("Segoe UI", Font.BOLD, 32));
-            title.setHorizontalAlignment(SwingConstants.CENTER);
-            title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
-            resultadoPanel.add(title);
-
-            if (resultadoTableModel == null) {
-                String[] cols = {"Responsable", "Dirección", "Celular", "Cédula", "Estudiante", "Grado", "Colegio", "Talla",
-                        "Traje", "Color", "Sombrero", "Cantidad", "Retiro", "Entrega", "Depósito", "Cancelado", "Devuelto", "Multa"};
-                resultadoTableModel = new DefaultTableModel(cols, 0) {
-                    @Override
-                    public boolean isCellEditable(int row, int column) {
-                        return false;
-                    }
-                };
-                resultadoTable = new JTable(resultadoTableModel);
-                resultadoTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                resultadoTable.setFont(btnFont);
-            } else {
-                resultadoTableModel.setRowCount(0);
-            }
-
-            // Colocar información dentro de la tabla
-            try {
-                // Recibe la lista de los alquileres desde el controlador
-                List<String[]> alquileres = controlador.buscarAlquiler(cedula);
-                if (alquileres.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "No hay alquileres registrados.", "Información", JOptionPane.INFORMATION_MESSAGE);
-                }
-                for (String[] a : alquileres) {
-                    if(a[16].equalsIgnoreCase("Si")){
-                        String[] nuevoAlquiler = Arrays.copyOf(a, a.length + 1);
-                        nuevoAlquiler[a.length] = "0";
-                        resultadoTableModel.addRow(nuevoAlquiler);
-                    }
-                    else{
-                        resultadoTableModel.addRow(controlador.verificarMultas(a));
-                    }
-                }
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Error al cargar los alquileres.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
-
-            ajustarAnchoColumnas(resultadoTable);
-
-            // Agrega la tabla al nuevo panel
-            JScrollPane scroll = new JScrollPane(resultadoTable);
-            resultadoPanel.add(scroll);
-
-            // Botón de volver
-            btnBack.addActionListener(e -> resetMenu(resultadoPanel));
-            btnBack.setFont(btnFont);
-            btnBack.setPreferredSize(btnSize);
-            resultadoPanel.add(btnBack);
-
-            title.setAlignmentX(Component.CENTER_ALIGNMENT);
-            scroll.setAlignmentX(Component.CENTER_ALIGNMENT);
-            btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-            add(resultadoPanel);
-
-            // Recargar el modelo de la interfaz
-            revalidate();
-            repaint();
-        }
-        catch (IOException ex) {
-            // Si falta algo, solo mostrar error
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+//    private void buscarAlquiler() {
+//        buscarPanel = new JPanel(new BorderLayout());
+//        buscarPanel.setBackground(Color.WHITE);
+//        buscarPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+//
+//        if (buscarPanel.getComponentCount() != 0) {
+//            buscarPanel.removeAll();
+//        }
+//
+//        JLabel title = new JLabel("Buscar Alquiler(es)");
+//        title.setFont(new Font("Segoe UI", Font.BOLD, 32));
+//        title.setHorizontalAlignment(SwingConstants.CENTER);
+//        title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+//        buscarPanel.add(title, BorderLayout.NORTH);
+//
+//        menuPanel.setVisible(false);
+//
+//        JPanel contentPanel = new JPanel();
+//        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+//        contentPanel.setBackground(Color.WHITE);
+//
+//        // Campo de texto
+//        cedula = new JTextField("Cédula del Responsable");
+//        cedula.setFont(btnFont);
+//        cedula.setMaximumSize(new Dimension(400, 40));
+//        cedula.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        contentPanel.add(cedula);
+//        contentPanel.add(Box.createVerticalStrut(15));
+//
+//        // Botón Buscar
+//        buscar = new JButton("Buscar");
+//        buscar.setFont(btnFont);
+//        buscar.setMaximumSize(new Dimension(400, 50));
+//        buscar.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        contentPanel.add(buscar);
+//        contentPanel.add(Box.createVerticalStrut(15));
+//
+//        // Botón Volver
+//        btnBack.setFont(btnFont);
+//        btnBack.setMaximumSize(new Dimension(400, 50));
+//        btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        btnBack.addActionListener(e -> resetMenu(buscarPanel));
+//        contentPanel.add(btnBack);
+//
+//        buscarPanel.add(contentPanel, BorderLayout.CENTER);
+//
+//        buscar.addActionListener(e -> resultadoBusqueda(cedula.getText()));
+//
+//        add(buscarPanel);
+//
+//        // Recargar el modelo de la interfaz
+//        revalidate();
+//        repaint();
+//    }
+//
+//    public void resultadoBusqueda(String cedula) {
+//        try {
+//            validarCampo(cedula, "Cédula del Responsable");
+//            buscarPanel.setVisible(false);
+//
+//            // Crear el panel de mostrar alquileres
+//            resultadoPanel = new JPanel();
+//            resultadoPanel.setLayout(new BoxLayout(resultadoPanel, BoxLayout.Y_AXIS)); // Botones uno debajo del otro
+//            resultadoPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+//
+//            resultadoPanel.setBackground(Color.WHITE);
+//            resultadoPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+//
+//            // Título encabezado
+//            JLabel title = new JLabel("Alquiler(es) Encontrado(s)");
+//            title.setFont(new Font("Segoe UI", Font.BOLD, 32));
+//            title.setHorizontalAlignment(SwingConstants.CENTER);
+//            title.setBorder(BorderFactory.createEmptyBorder(10, 0, 20, 0));
+//            resultadoPanel.add(title);
+//
+//            if (resultadoTableModel == null) {
+//                String[] cols = {"Responsable", "Dirección", "Celular", "Cédula", "Estudiante", "Grado", "Colegio", "Talla",
+//                        "Traje", "Color", "Sombrero", "Cantidad", "Retiro", "Entrega", "Depósito", "Cancelado", "Devuelto", "Multa"};
+//                resultadoTableModel = new DefaultTableModel(cols, 0) {
+//                    @Override
+//                    public boolean isCellEditable(int row, int column) {
+//                        return false;
+//                    }
+//                };
+//                resultadoTable = new JTable(resultadoTableModel);
+//                resultadoTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//                resultadoTable.setFont(btnFont);
+//            } else {
+//                resultadoTableModel.setRowCount(0);
+//            }
+//
+//            // Colocar información dentro de la tabla
+//            try {
+//                // Recibe la lista de los alquileres desde el controlador
+//                List<String[]> alquileres = controlador.buscarAlquiler(cedula);
+//                if (alquileres.isEmpty()) {
+//                    JOptionPane.showMessageDialog(this, "No hay alquileres registrados.", "Información", JOptionPane.INFORMATION_MESSAGE);
+//                }
+//                for (String[] a : alquileres) {
+//                    if(a[16].equalsIgnoreCase("Si")){
+//                        String[] nuevoAlquiler = Arrays.copyOf(a, a.length + 1);
+//                        nuevoAlquiler[a.length] = "0";
+//                        resultadoTableModel.addRow(nuevoAlquiler);
+//                    }
+//                    else{
+//                        resultadoTableModel.addRow(controlador.verificarMultas(a));
+//                    }
+//                }
+//            } catch (IOException ex) {
+//                JOptionPane.showMessageDialog(this, "Error al cargar los alquileres.", "Error", JOptionPane.ERROR_MESSAGE);
+//            }
+//
+//            ajustarAnchoColumnas(resultadoTable);
+//
+//            // Agrega la tabla al nuevo panel
+//            JScrollPane scroll = new JScrollPane(resultadoTable);
+//            resultadoPanel.add(scroll);
+//
+//            // Botón de volver
+//            btnBack.addActionListener(e -> resetMenu(resultadoPanel));
+//            btnBack.setFont(btnFont);
+//            btnBack.setPreferredSize(btnSize);
+//            resultadoPanel.add(btnBack);
+//
+//            title.setAlignmentX(Component.CENTER_ALIGNMENT);
+//            scroll.setAlignmentX(Component.CENTER_ALIGNMENT);
+//            btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
+//
+//            add(resultadoPanel);
+//
+//            // Recargar el modelo de la interfaz
+//            revalidate();
+//            repaint();
+//        }
+//        catch (IOException ex) {
+//            // Si falta algo, solo mostrar error
+//            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+//        }
+//    }
 
     public void ajustarAnchoColumnas(JTable tabla) {
         for (int columna = 0; columna < tabla.getColumnCount(); columna++) {
@@ -788,14 +714,13 @@ public class InterfazSwing extends JFrame {
 
             tableColumn.setPreferredWidth(anchoMax);
         }
+        tabla.setRowHeight(50);
     }
 
     private void resetMenu(JPanel panel){
         // Elimina el panel actual antes de mostrar el menú
         panel.setVisible(false);
-        remove(panel); // Remueve el panel actual del contenedor.
-        menuPanel.setVisible(true);
-        add(menuPanel); // Vuelve a agregar el menú.
+        labelImagen.setVisible(true);
         revalidate();  // Actualiza el diseño.
         repaint();     // Redibuja el frame.
     }
@@ -806,4 +731,77 @@ public class InterfazSwing extends JFrame {
             throw new IOException("Debe ingresar un dato para: " + textoGuia);
         }
     }
+
+    private static class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((value == null) ? "Entregar" : value.toString());
+            return this;
+        }
+    }
+
+    private class ButtonEditor extends DefaultCellEditor {
+        protected JButton button;
+        private String label;
+        private boolean isPushed;
+        private JTable table;
+
+        public ButtonEditor(JCheckBox checkBox, JTable tableRef) {
+            super(checkBox);
+            this.table = tableRef;
+            button = new JButton();
+            button.setOpaque(true);
+
+            button.addActionListener(e -> fireEditingStopped());
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                                                     boolean isSelected, int row, int column) {
+
+            label = (value == null) ? "Entregar" : value.toString();
+            button.setText(label);
+            isPushed = true;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (isPushed) {
+                int rowIndex = table.getSelectedRow();
+
+                String entregado = ((String) table.getValueAt(rowIndex, 16)).trim();
+                if (entregado.equalsIgnoreCase("Si")) {
+                    JOptionPane.showMessageDialog(null, "Este alquiler ya fue entregado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    String[] filaDatos = new String[table.getColumnCount()];
+                    for (int i = 0; i < filaDatos.length; i++) {
+                        filaDatos[i] = (String) table.getValueAt(rowIndex, i);
+                    }
+
+                    // Aquí va tu lógica
+                    marcarPago(filaDatos[3], filaDatos[12]); // Por ejemplo
+                    mostrarAlquileres();
+                }
+            }
+            isPushed = false;
+            return label;
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
+
+        @Override
+        protected void fireEditingStopped() {
+            super.fireEditingStopped();
+        }
+    }
+
 }
