@@ -272,7 +272,6 @@ public class InterfazSwing extends JFrame {
 
         // Finalmente el scrollPane se agrega dentro de registroPanel
         registroPanel.add(scrollPane, BorderLayout.CENTER);
-
         registroPanel.add(registrar);
 
         // Botón volver

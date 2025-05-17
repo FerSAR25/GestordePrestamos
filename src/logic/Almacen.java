@@ -41,7 +41,7 @@ public class Almacen {
         return archivo.cargarAlquileres();
     }
 
-    // Recibe los datos del controlador, y de la persistencia para marcar como pago un prestamo
+    // Recibe los datos del controlador, y de la persistencia para marcar como pago un alquiler
     public boolean marcarComoPagado(String cedulaResponsable, String fechaRetiro) throws IOException {
         List<String[]> alquileres = archivo.cargarAlquileres();
         boolean encontrado = false;

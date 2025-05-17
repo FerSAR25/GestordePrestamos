@@ -83,7 +83,6 @@ public class Controlador {
             // Obtiene la fecha actual para ser comparada con la fecha de entrega, verificando si se pasó o no
             LocalDateTime fecha = LocalDateTime.now().withSecond(0).withNano(0);
             String actual = fecha.format(formatter);
-
             String retiro = alquiler[12];
             String entrega = alquiler[13];
 
