@@ -91,7 +91,7 @@ public class Almacen {
         // Crear nuevo arreglo con tamaño +1
         String[] alquilerExtendido = Arrays.copyOf(alquiler, alquiler.length + 1);
 
-        if (multa == 0) {
+        if (multa == 0 || alquiler[16].equalsIgnoreCase("true")) {
             alquilerExtendido[alquiler.length] = "0";
         }
         else{
