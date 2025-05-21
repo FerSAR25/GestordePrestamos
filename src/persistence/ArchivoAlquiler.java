@@ -1,43 +1,42 @@
 package persistence;
 
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonIOException;
+import model.Alquiler;
+
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import com.google.gson.Gson;
 
 public class ArchivoAlquiler {
-    private static final String FILE_NAME = "alquileres.csv";
+    private final String FILE_NAME = "alquileres.json";
+    Gson gson = new GsonBuilder().registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter()).setPrettyPrinting().create();;
 
     // Lee el archivo CSV, lo guarda y lo devuelve como una lista de arrays de String
-    public List<String[]> cargarAlquileres() throws IOException {
-        List<String[]> alquileres = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(FILE_NAME))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                alquileres.add(linea.split(","));
-            }
+    public List<Alquiler> cargarAlquileres() throws IOException {
+        File file = new File(FILE_NAME);
+        if (!file.exists() || file.length() == 0) {
+            return null; // No hay datos aún
         }
-        // Devuelve la lista creada
-        return alquileres;
-    }
-
-    // Recibe un String de la logica, y lo guarda en el archivo csv
-    public void guardarAlquiler(String alquilerCSV) throws IOException {
-        // Selecciona el archivo de la constante FILE_NAME, y no sobreescribe la información dentro del CSV
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME, true))) {
-            bw.write(alquilerCSV);
-            bw.newLine();
+        try(FileReader reader = new FileReader(FILE_NAME)){
+            Alquiler[] array = gson.fromJson(reader, Alquiler[].class);
+            return new ArrayList<>(Arrays.asList(array));
         }
-        // Cuando sale correctamente no devuelve nada, si existe algún error al escribir se lanza la excepcion
+        catch(JsonIOException e){
+            throw new IOException("No hay alquileres registrados.");
+        }
+        catch(IOException e){
+            return null;
+        }
     }
 
     // Actualiza la información del csv, pasándole una nueva lista de alquileres actualizada
-    public void actualizarAlquileres(List<String[]> alquileres) throws IOException {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
-            for (String[] alquiler : alquileres) {
-                bw.write(String.join(",", alquiler));  // Convierte la lista en una línea de texto CSV
-                bw.newLine();
-            }
+    public void actualizarAlquileres(List<Alquiler> alquileres) throws IOException {
+        try(FileWriter writer = new FileWriter(FILE_NAME)){
+            gson.toJson(alquileres != null ? alquileres : new ArrayList<>(), writer);
         }
     }
 }

@@ -1,6 +1,8 @@
 package gui;
 
 import control.Controlador;
+import model.Alquiler;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -45,9 +47,8 @@ public class Interfaz {
                 // están guardados en el sistema o archivo (.CSV)
                 case "2":
                     try{
-                        List<String[]> alquileresActivos = controlador.obtenerAlquileres();
-                        for(String[] alquiler: alquileresActivos){
-                            mostrarAlquileres(alquiler);
+                        List<Alquiler> alquileresActivos = controlador.obtenerAlquileres();
+                        for(Alquiler alquiler: alquileresActivos){
                             System.out.println("-----------------------------------");
                         }
                     }
@@ -63,12 +64,10 @@ public class Interfaz {
                 case "4":
                     try{
                         // Usa exclusivamente los alquileres que aún no han sido devueltos
-                        List<String[]> alquileres = controlador.obtenerAlquileres();
-                        for(String[] alquiler: alquileres){
-                            String[] multados = controlador.obtenerMultas(alquiler);
+                        List<Alquiler> alquileres = controlador.obtenerAlquileres();
+                        for(Alquiler alquiler: alquileres){
+                            Alquiler multados = controlador.actualizarMultas(alquiler);
                             // Solo si se pasa del plazo se muestra la multa correspondiente
-                            mostrarAlquileres(multados);
-                            System.out.println("Multa: " + multados[16]);
                             System.out.println("-----------------------------------");
                         }
                     }
@@ -203,7 +202,7 @@ public class Interfaz {
         // Se llama al controlador, y si se recibe un valor true salió correctamente en cambio
         // si es false no se encontró el alquiler, o una excepcion no se pudo abrir el archivo
         try {
-            if (controlador.marcarComoPagado(cedulaRepresentante, aRetiro)) {
+            if (controlador.entregarAlquiler(cedulaRepresentante, aRetiro)) {
                 System.out.println("El alquiler ha sido marcado como pagado.");
             } else {
                 System.out.println("No se encontró el alquiler.");

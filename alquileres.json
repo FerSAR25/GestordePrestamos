@@ -1,0 +1,288 @@
+[
+  {
+    "responsable": {
+      "direccion": "Cra. 45 #10-23, Cali",
+      "celular": 3112457890,
+      "cedula": 1012345678,
+      "nombre": "Marta Ruiz"
+    },
+    "estudiante": {
+      "grado": "5°",
+      "colegio": "Colegio San José",
+      "talla": "8",
+      "nombre": "Camila Torres"
+    },
+    "traje": {
+      "clase": "Folclórico",
+      "color": "Rojo",
+      "sombrero": true
+    },
+    "cantidad": 1,
+    "fechaRetiro": "2025-05-10T14:30:00",
+    "fechaEntrega": "2025-05-13T10:00:00",
+    "deposito": 0.0,
+    "multa": 0.0,
+    "deuda": 0.0,
+    "entregado": false
+  },
+  {
+    "responsable": {
+      "direccion": "Calle 72 #15-34, Bogotá",
+      "celular": 3005678923,
+      "cedula": 1023456789,
+      "nombre": "Luis Gómez"
+    },
+    "estudiante": {
+      "grado": "7°",
+      "colegio": "Liceo Moderno",
+      "talla": "10",
+      "nombre": "Sebastián Gómez"
+    },
+    "traje": {
+      "clase": "Moderno",
+      "color": "Negro",
+      "sombrero": false
+    },
+    "cantidad": 2,
+    "fechaRetiro": "2025-05-18T11:00:00",
+    "fechaEntrega": "2025-05-20T12:00:00",
+    "deposito": 0.0,
+    "multa": 0.0,
+    "deuda": 0.0,
+    "entregado": false
+  },
+  {
+    "responsable": {
+      "direccion": "Cra. 7 #45-67, Medellín",
+      "celular": 3129876543,
+      "cedula": 1034567890,
+      "nombre": "Andrea Castaño"
+    },
+    "estudiante": {
+      "grado": "3°",
+      "colegio": "Instituto El Bosque",
+      "talla": "6",
+      "nombre": "Valentina Castaño"
+    },
+    "traje": {
+      "clase": "Típico",
+      "color": "Verde",
+      "sombrero": true
+    },
+    "cantidad": 1,
+    "fechaRetiro": "2025-05-01T10:00:00",
+    "fechaEntrega": "2025-05-06T16:00:00",
+    "deposito": 25000.0,
+    "multa": 35000.0,
+    "deuda": 10000.0,
+    "entregado": false
+  },
+  {
+    "responsable": {
+      "direccion": "Av. 3 #21-40, Bucaramanga",
+      "celular": 3145674321,
+      "cedula": 1045678901,
+      "nombre": "Jorge Peña"
+    },
+    "estudiante": {
+      "grado": "6°",
+      "colegio": "Colegio Santander",
+      "talla": "12",
+      "nombre": "Tomás Peña"
+    },
+    "traje": {
+      "clase": "Llanero",
+      "color": "Blanco",
+      "sombrero": true
+    },
+    "cantidad": 2,
+    "fechaRetiro": "2025-05-15T09:00:00",
+    "fechaEntrega": "2025-05-18T18:00:00",
+    "deposito": 0.0,
+    "multa": 0.0,
+    "deuda": 0.0,
+    "entregado": false
+  },
+  {
+    "responsable": {
+      "direccion": "Calle 60 #8-11, Cartagena",
+      "celular": 3161234567,
+      "cedula": 1056789012,
+      "nombre": "Carolina Díaz"
+    },
+    "estudiante": {
+      "grado": "4°",
+      "colegio": "Gimnasio del Caribe",
+      "talla": "S",
+      "nombre": "Samuel Díaz"
+    },
+    "traje": {
+      "clase": "Costeño",
+      "color": "Amarillo",
+      "sombrero": true
+    },
+    "cantidad": 1,
+    "fechaRetiro": "2025-04-25T13:00:00",
+    "fechaEntrega": "2025-04-30T13:30:00",
+    "deposito": 30000.0,
+    "multa": 50000.0,
+    "deuda": 20000.0,
+    "entregado": false
+  },
+  {
+    "responsable": {
+      "direccion": "Cra. 9 #30-22, Pereira",
+      "celular": 3203456789,
+      "cedula": 1067890123,
+      "nombre": "Fernando Ramírez"
+    },
+    "estudiante": {
+      "grado": "8°",
+      "colegio": "Colegio del Otún",
+      "talla": "M",
+      "nombre": "David Ramírez"
+    },
+    "traje": {
+      "clase": "Andino",
+      "color": "Azul",
+      "sombrero": false
+    },
+    "cantidad": 1,
+    "fechaRetiro": "2025-05-16T15:00:00",
+    "fechaEntrega": "2025-05-17T17:00:00",
+    "deposito": 0.0,
+    "multa": 0.0,
+    "deuda": 0.0,
+    "entregado": true
+  },
+  {
+    "responsable": {
+      "direccion": "Transv. 4 #50-60, Manizales",
+      "celular": 3016547890,
+      "cedula": 1078901234,
+      "nombre": "Natalia López"
+    },
+    "estudiante": {
+      "grado": "2°",
+      "colegio": "Instituto Cafetero",
+      "talla": "XS",
+      "nombre": "Luciana López"
+    },
+    "traje": {
+      "clase": "Paisaje",
+      "color": "Rosado",
+      "sombrero": false
+    },
+    "cantidad": 1,
+    "fechaRetiro": "2025-05-18T10:00:00",
+    "fechaEntrega": "2025-05-19T10:00:00",
+    "deposito": 0.0,
+    "multa": 0.0,
+    "deuda": 0.0,
+    "entregado": true
+  },
+  {
+    "responsable": {
+      "direccion": "Calle 85 #10-10, Bogotá",
+      "celular": 3124567890,
+      "cedula": 1089012345,
+      "nombre": "Ana María Vélez"
+    },
+    "estudiante": {
+      "grado": "1°",
+      "colegio": "Colegio Nueva Era",
+      "talla": "4",
+      "nombre": "Sofía Vélez"
+    },
+    "traje": {
+      "clase": "Campesino",
+      "color": "Beige",
+      "sombrero": true
+    },
+    "cantidad": 2,
+    "fechaRetiro": "2025-05-17T12:00:00",
+    "fechaEntrega": "2025-05-18T16:00:00",
+    "deposito": 0.0,
+    "multa": 0.0,
+    "deuda": 0.0,
+    "entregado": false
+  },
+  {
+    "responsable": {
+      "direccion": "Av. 1 #2-03, Villavicencio",
+      "celular": 3184567890,
+      "cedula": 1090123456,
+      "nombre": "Diego Herrera"
+    },
+    "estudiante": {
+      "grado": "9°",
+      "colegio": "Colegio de los Llanos",
+      "talla": "L",
+      "nombre": "Juan Herrera"
+    },
+    "traje": {
+      "clase": "Llanero",
+      "color": "Gris",
+      "sombrero": true
+    },
+    "cantidad": 1,
+    "fechaRetiro": "2025-05-05T08:00:00",
+    "fechaEntrega": "2025-05-10T17:00:00",
+    "deposito": 0.0,
+    "multa": 0.0,
+    "deuda": 0.0,
+    "entregado": false
+  },
+  {
+    "responsable": {
+      "direccion": "Cra. 10 #50-30, Neiva",
+      "celular": 3173456789,
+      "cedula": 1101234567,
+      "nombre": "Lucía Martínez"
+    },
+    "estudiante": {
+      "grado": "10°",
+      "colegio": "Institución Santa María",
+      "talla": "XL",
+      "nombre": "Daniel Martínez"
+    },
+    "traje": {
+      "clase": "Carnaval",
+      "color": "Multicolor",
+      "sombrero": false
+    },
+    "cantidad": 1,
+    "fechaRetiro": "2025-05-19T17:43:00",
+    "fechaEntrega": "2025-05-20T10:00:00",
+    "deposito": 0.0,
+    "multa": 0.0,
+    "deuda": 0.0,
+    "entregado": false
+  },
+  {
+    "responsable": {
+      "direccion": "Carrera 1",
+      "celular": 3224444,
+      "cedula": 462222,
+      "nombre": "Laura"
+    },
+    "estudiante": {
+      "grado": "302",
+      "colegio": "Salesiano",
+      "talla": "8",
+      "nombre": "Christopher"
+    },
+    "traje": {
+      "clase": "Pokemon",
+      "color": "Rojo",
+      "sombrero": false
+    },
+    "cantidad": 1,
+    "fechaRetiro": "2025-05-20T20:17:00",
+    "fechaEntrega": "2025-08-16T10:00:00",
+    "deposito": 2500.0,
+    "multa": 0.0,
+    "deuda": 0.0,
+    "entregado": false
+  }
+]

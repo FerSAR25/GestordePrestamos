@@ -1,4 +1,4 @@
-package logic;
+package model;
 
 import java.time.LocalDateTime;
 
@@ -7,11 +7,13 @@ public class Alquiler {
     private Estudiante estudiante;
     private Traje traje;
     private int cantidad;
-    private boolean cancelado;
     private LocalDateTime fechaRetiro;
     private LocalDateTime fechaEntrega;
     private double deposito;
-    private boolean devuelto;
+    private double multa;
+    private double deuda;
+    private boolean entregado;
+
 
     public Alquiler(Responsable responsable, Estudiante estudiante, Traje traje, int cantidad,
                     LocalDateTime fechaRetiro, LocalDateTime fechaEntrega, double deposito) {
@@ -22,24 +24,17 @@ public class Alquiler {
         this.fechaRetiro = fechaRetiro;
         this.fechaEntrega = fechaEntrega;
         this.deposito = deposito;
-        this.cancelado = false;
-        this.devuelto = false;
+        this.multa = 0;
+        this.deuda = 0;
+        this.entregado = false;
     }
 
-    public void cancelarAlquiler() {
-        this.cancelado = true;
+    public boolean isEntregado() {
+        return entregado;
     }
 
-    public boolean isCancelado() {
-        return cancelado;
-    }
-
-    public boolean isDevuelto() {
-        return devuelto;
-    }
-
-    public void marcarDevuelto() {
-        this.devuelto = true;
+    public void entregar() {
+        this.entregado = true;
     }
 
     public LocalDateTime getFechaEntrega() {
@@ -97,5 +92,21 @@ public class Alquiler {
 
     public void setDeposito(double deposito) {
         this.deposito = deposito;
+    }
+
+    public double getMulta() {
+        return multa;
+    }
+
+    public void setMulta(double multa) {
+        this.multa = multa;
+    }
+
+    public double getDeuda() {
+        return deuda;
+    }
+
+    public void setDeuda(double deuda) {
+        this.deuda = deuda;
     }
 }

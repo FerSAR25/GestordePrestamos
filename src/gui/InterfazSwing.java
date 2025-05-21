@@ -1,13 +1,18 @@
 package gui;
 
 import control.Controlador;
+import model.Alquiler;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +27,9 @@ public class InterfazSwing extends JFrame {
     Font btnFont;
     Dimension btnSize;
     JLabel labelImagen;
+    Border borde;
+    Border padding;
+    ImageIcon logo;
 
     public InterfazSwing(){
         // Configuración de la ventana
@@ -39,6 +47,16 @@ public class InterfazSwing extends JFrame {
         btnBack = new JButton("Volver");
         btnFont = new Font("Segoe UI", Font.PLAIN, 18);
         btnSize = new Dimension(250, 70);
+
+        btnBack.setPreferredSize(btnSize);
+        btnBack.setFont(btnFont);
+
+        borde = BorderFactory.createLineBorder(Color.BLACK);
+        padding = BorderFactory.createEmptyBorder(20, 20, 20, 20);
+
+        logo = new ImageIcon("imagenes/trajes.jpg");
+
+        this.setIconImage(logo.getImage());
     }
 
     public void vista(){
@@ -55,13 +73,16 @@ public class InterfazSwing extends JFrame {
     private void initGUI() {
         principalPanel = new JPanel();
         principalPanel.setLayout(new BorderLayout());
-        // Menú Principal con botones grandes y espaciados
+        principalPanel.setBackground(Color.LIGHT_GRAY);
+        principalPanel.setBorder(padding);
+
+        // Menú Principal
         menuPanel = new JPanel();
         menuPanel.setLayout(new GridLayout(8, 1, 5, 5)); // Botones uno debajo del otro
         menuPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         menuPanel.setBackground(Color.WHITE);
-        menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        menuPanel.setBorder(BorderFactory.createCompoundBorder(borde, padding));
 
         ImageIcon icon = new ImageIcon("imagenes/trajes.jpg");
         labelImagen = new JLabel(icon);
@@ -115,7 +136,7 @@ public class InterfazSwing extends JFrame {
 
         principalPanel.add(menuPanel, BorderLayout.WEST);
         principalPanel.add(labelImagen);
-        add(principalPanel);
+        setContentPane(principalPanel);
         setVisible(true);
     }
 
@@ -135,7 +156,7 @@ public class InterfazSwing extends JFrame {
         registroPanel = new JPanel();
         registroPanel.setLayout(new BoxLayout(registroPanel, BoxLayout.Y_AXIS));
         registroPanel.setBackground(Color.WHITE);
-        registroPanel.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
+        registroPanel.setBorder(BorderFactory.createCompoundBorder(borde, padding));
 
         // Si ya tiene información se elimina
         if (registroPanel.getComponentCount() != 0) {
@@ -251,7 +272,8 @@ public class InterfazSwing extends JFrame {
         contenidoPanel.add(Box.createVerticalStrut(15));
 
         // Botón registrar
-        registrar.setMaximumSize(new Dimension(400, 50));
+        registrar.setPreferredSize(btnSize);
+        registrar.setFont(btnFont);
         registrar.setAlignmentX(Component.CENTER_ALIGNMENT);
         registrar.addActionListener(e -> {
             registro(
@@ -275,10 +297,9 @@ public class InterfazSwing extends JFrame {
         registroPanel.add(registrar);
 
         // Botón volver
-        btnBack.setMaximumSize(new Dimension(400, 50));
         btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
         btnBack.addActionListener(e -> resetMenu(registroPanel));
-        registroPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        registroPanel.add(Box.createRigidArea(new Dimension(0, 15)));
         registroPanel.add(btnBack);
 
         // Mostramos
@@ -356,7 +377,7 @@ public class InterfazSwing extends JFrame {
         mostrarPanel.setLayout(new BoxLayout(mostrarPanel, BoxLayout.Y_AXIS));
         mostrarPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         mostrarPanel.setBackground(Color.WHITE);
-        mostrarPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        mostrarPanel.setBorder(BorderFactory.createCompoundBorder(borde, padding));
 
         JLabel title = new JLabel("Mostrar Alquileres");
         title.setFont(new Font("Segoe UI", Font.BOLD, 32));
@@ -378,8 +399,8 @@ public class InterfazSwing extends JFrame {
         campoBusqueda.setFont(new Font("Arial", Font.PLAIN, 14));
 
         if (mostrarTableModel == null) {
-            String[] cols = {"Responsable", "Dirección", "Celular", "Cédula", "Estudiante", "Grado", "Colegio", "Talla",
-                    "Traje", "Color", "Sombrero", "Cantidad", "Retiro", "Entrega", "Depósito", "Cancelado", "Devuelto", "Multa", "Entregar"};
+            String[] cols = {"Responsable", "Dirección", "Celular", "Cédula", "Estudiante", "Colegio", "Grado", "Talla",
+                    "Traje", "Color", "Sombrero", "Cantidad", "Retiro", "Entrega", "Depósito", "Multa", "Deuda", "Entregado", "Entregar"};
             mostrarTableModel = new DefaultTableModel(cols, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
@@ -397,31 +418,30 @@ public class InterfazSwing extends JFrame {
         }
 
         JScrollPane scrollTabla = new JScrollPane(mostrarTable);
-//        scrollTabla.setPreferredSize(new Dimension(900, 300));
 
-        List<String[]> alquileres;
+        List<Alquiler> alquileres;
         try {
             alquileres = controlador.obtenerAlquileres();
-            if (alquileres.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "No hay alquileres registrados.", "Información", JOptionPane.INFORMATION_MESSAGE);
+            if(alquileres == null){
+                throw new IOException("No hay alquileres registrados.");
             }
         } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "Error al cargar los alquileres.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            resetMenu(mostrarPanel);
             return;
         }
+        final List<Alquiler> finalAlquileres = alquileres;
 
-        List<String[]> finalAlquileres = alquileres;
-
-        campoBusqueda.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) {
+        campoBusqueda.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
                 aplicarFiltros(finalAlquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable);
             }
 
-            public void removeUpdate(javax.swing.event.DocumentEvent e) {
+            public void removeUpdate(DocumentEvent e) {
                 aplicarFiltros(finalAlquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable);
             }
 
-            public void changedUpdate(javax.swing.event.DocumentEvent e) {
+            public void changedUpdate(DocumentEvent e) {
                 aplicarFiltros(finalAlquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable);
             }
         });
@@ -446,42 +466,41 @@ public class InterfazSwing extends JFrame {
 
         // Botón volver
         btnBack.addActionListener(e -> resetMenu(mostrarPanel));
-        btnBack.setFont(new Font("Arial", Font.PLAIN, 14));
-        btnBack.setPreferredSize(new Dimension(120, 30));
         btnBack.setAlignmentX(Component.CENTER_ALIGNMENT);
         mostrarPanel.add(Box.createVerticalStrut(15));
         mostrarPanel.add(btnBack);
 
         principalPanel.add(mostrarPanel);
 
+
         // Cargar datos al iniciar
-        aplicarFiltros(alquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable);
+        aplicarFiltros(finalAlquileres, campoBusqueda, comboFiltro, chkEntregados, mostrarTable);
 
         revalidate();
         repaint();
     }
 
-    private void aplicarFiltros(List<String[]> alquileres, JTextField campoBusqueda, JComboBox<String> comboFiltro,
+    private void aplicarFiltros(List<Alquiler> alquileres, JTextField campoBusqueda, JComboBox<String> comboFiltro,
                                 JCheckBox chkNoEntregados, JTable mostrarTable) {
 
         String texto = campoBusqueda.getText().trim().toLowerCase();
         int indice = comboFiltro.getSelectedIndex();
 
-        List<String[]> filtrados = new ArrayList<>();
+        List<Alquiler> filtrados = new ArrayList<>();
 
-        for (String[] alq : alquileres) {
+        for (Alquiler alq : alquileres) {
             boolean coincide = false;
 
             if (texto.isEmpty()) {
                 coincide = true;
             } else {
                 String campo = switch (indice) {
-                    case 0 -> alq[3]; // Cédula
-                    case 1 -> alq[0]; // Responsable
-                    case 2 -> alq[4]; // Estudiante
-                    case 3 -> alq[12]; // Retiro
-                    case 4 -> alq[13];
-                    default -> ""; // Entrega
+                    case 0 -> String.valueOf(alq.getResponsable().getCedula()); // Cédula
+                    case 1 -> alq.getResponsable().getNombre(); // Responsable
+                    case 2 -> alq.getEstudiante().getNombre(); // Estudiante
+                    case 3 -> alq.getFechaRetiro().toString(); // Retiro
+                    case 4 -> alq.getFechaEntrega().toString(); // Entrega
+                    default -> "";
                 };
 
                 if (campo != null && campo.toLowerCase().contains(texto)) {
@@ -502,10 +521,10 @@ public class InterfazSwing extends JFrame {
     }
 
 
-    private void marcarPago(String cedula, String fecha){
+    private void entregar(Object cedula, Object fecha){
         try {
             // Registro
-            if(controlador.marcarComoPagado(cedula, fecha)){
+            if(controlador.entregarAlquiler(cedula, fecha)){
                 JOptionPane.showMessageDialog(this, "Alquiler fue pagado y entregado exitosamente.");
                 resetMenu(mostrarPanel);
             }
@@ -518,15 +537,22 @@ public class InterfazSwing extends JFrame {
         }
     }
 
-    public void actualizarTabla(List<String[]> alquileresFiltrados, boolean soloNoEntregados) throws IOException {
+    public void actualizarTabla(List<Alquiler> alquileresFiltrados, boolean soloNoEntregados) throws IOException {
         mostrarTableModel.setRowCount(0); // Limpiar la tabla
 //        botonesPanel.removeAll(); // Limpiar botones anteriores
 
-        for (String[] alquiler : alquileresFiltrados) {
-            boolean yaEntregado = alquiler[16].trim().equalsIgnoreCase("Si");
+        for (Alquiler alquiler : alquileresFiltrados) {
+            boolean yaEntregado = alquiler.isEntregado();
             if (soloNoEntregados && yaEntregado) continue;
-
-            mostrarTableModel.addRow(alquiler);
+            Object[] fila = {alquiler.getResponsable().getNombre(), alquiler.getResponsable().getDireccion(),
+                    alquiler.getResponsable().getCelular(), alquiler.getResponsable().getCedula(),
+                    alquiler.getEstudiante().getNombre(), alquiler.getEstudiante().getColegio(),
+                    alquiler.getEstudiante().getGrado(), alquiler.getEstudiante().getTalla(),
+                    alquiler.getTraje().getClase(), alquiler.getTraje().getColor(),
+                    (alquiler.getTraje().isSombrero() ? "Si": "No"), alquiler.getCantidad(),
+                    alquiler.getFechaRetiro(), alquiler.getFechaEntrega(), alquiler.getDeposito(),
+                    alquiler.getMulta(), alquiler.getDeuda(), (alquiler.isEntregado() ? "Si": "No")};
+            mostrarTableModel.addRow(fila);
         }
 //            JButton btnEntregar = new JButton("Entregar");
 //            btnEntregar.setFont(new Font("Arial", Font.PLAIN, 12));
@@ -773,17 +799,11 @@ public class InterfazSwing extends JFrame {
             if (isPushed) {
                 int rowIndex = table.getSelectedRow();
 
-                String entregado = ((String) table.getValueAt(rowIndex, 16)).trim();
+                String entregado = (String)table.getValueAt(rowIndex, 17);
                 if (entregado.equalsIgnoreCase("Si")) {
                     JOptionPane.showMessageDialog(null, "Este alquiler ya fue entregado.", "Aviso", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    String[] filaDatos = new String[table.getColumnCount()];
-                    for (int i = 0; i < filaDatos.length; i++) {
-                        filaDatos[i] = (String) table.getValueAt(rowIndex, i);
-                    }
-
-                    // Aquí va tu lógica
-                    marcarPago(filaDatos[3], filaDatos[12]); // Por ejemplo
+                    entregar(table.getValueAt(rowIndex, 3), table.getValueAt(rowIndex, 12));
                     mostrarAlquileres();
                 }
             }

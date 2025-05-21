@@ -1,16 +1,20 @@
 package logic;
 
+import model.Alquiler;
+import model.Estudiante;
+import model.Responsable;
+import model.Traje;
 import persistence.ArchivoAlquiler;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Almacen {
     private final ArchivoAlquiler archivo;
-    private static final double MULTA_POR_DIA = 2500;
+    private final double MULTA_POR_DIA = 2500;
 
     public Almacen() {
         this.archivo = new ArchivoAlquiler();
@@ -22,6 +26,8 @@ public class Almacen {
                                   LocalDateTime retiro, LocalDateTime entrega, Double deposito,
                                   String trajeClase, String color, boolean sombrero) throws IOException {
 
+        List<Alquiler> alquileres = archivo.cargarAlquileres();
+
         // Crea al Responsable ,Estudiante y Traje con los datos necesarios, y luego crea el nuevo alquiler pasandole todos los datos restantes
         Responsable responsable = new Responsable(responsableNombre, direccion, celular, cedula);
         Estudiante estudiante = new Estudiante(estudianteNombre, grado, colegio, talla);
@@ -31,40 +37,60 @@ public class Almacen {
         traje.setSombrero(sombrero);
         Alquiler alquiler = new Alquiler(responsable, estudiante, traje, cantidad, retiro, entrega, deposito);
 
+        if(alquileres == null){
+            alquileres = new ArrayList<>();
+        }
+        alquileres.add(alquiler);
+
         // Se llama a la persistencia para guardar el nuevo traje, no sin antes convertirlo a formato csv
-        archivo.guardarAlquiler(convertirACSV(alquiler));
+        archivo.actualizarAlquileres(alquileres);
     }
 
     // Obtiene la lista de alquileres llamando a la persistencia
-    public List<String[]> obtenerAlquileres() throws IOException {
+    public List<Alquiler> obtenerAlquileres() throws IOException {
         // Recibe todos los alquileres guardados en el archivo csv
         return archivo.cargarAlquileres();
     }
 
-    // Recibe los datos del controlador, y de la persistencia para marcar como pago un alquiler
-    public boolean marcarComoPagado(String cedulaResponsable, String fechaRetiro) throws IOException {
-        List<String[]> alquileres = archivo.cargarAlquileres();
+    // Recibe los datos del controlador, y de la persistencia para marcar como entregado un alquiler
+    public boolean entregarAlquiler(Long cedulaResponsable, LocalDateTime fechaRetiro) throws IOException {
+        List<Alquiler> alquileres = archivo.cargarAlquileres();
         boolean encontrado = false;
 
-        for (String[] alquiler : alquileres) {
+        for (Alquiler alquiler : alquileres) {
             // Verifica si la cédula del responsable y la fecha de entrega coinciden
-            if (alquiler[3].equals(cedulaResponsable) && alquiler[12].equals(fechaRetiro)) {
-                alquiler[15] = "true"; // Cambia el estado de pago a "true"
-                alquiler[16] = "true"; // Cambia el estado de entregado a "true"
+            if (alquiler.getResponsable().getCedula() == cedulaResponsable && alquiler.getFechaRetiro().equals(fechaRetiro)) {
+                alquiler.entregar(); // Cambia el estado de entregado a "true"
                 encontrado = true;
                 break;  // Sale del bucle al encontrar el alquiler
             }
         }
 
         if (encontrado) {
-            archivo.actualizarAlquileres(alquileres);  // Guarda los cambios en el archivo CSV
+            archivo.actualizarAlquileres(alquileres);  // Guarda los cambios en el archivo
             return true;
         } else {
             return false;
         }
     }
 
-    public double verificarMultas(LocalDateTime fechaActual, LocalDateTime fechaRetiro, LocalDateTime fechaEntrega, double deposito) {
+    public void actualizarAlquileres(List<Alquiler> alquileres) throws IOException {
+        archivo.actualizarAlquileres(alquileres);
+    }
+
+    public Alquiler actualizarMultas(Alquiler alquiler) {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        // Obtiene la fecha actual para ser comparada con la fecha de entrega, verificando si se pasó o no
+        LocalDateTime fecha = LocalDateTime.now().withSecond(0).withNano(0);
+        String actual = fecha.format(formatter);
+
+        // Convierte las fechas String en formato de fecha a LocalDateTime
+        LocalDateTime fechaActual = LocalDateTime.parse(actual, formatter);
+
+        LocalDateTime fechaRetiro = alquiler.getFechaRetiro();
+        LocalDateTime fechaEntrega = alquiler.getFechaEntrega();
 
         // Calcular los días entre fecha de retiro y entrega
         long diasEntrega = ChronoUnit.DAYS.between(fechaRetiro, fechaEntrega);
@@ -72,41 +98,34 @@ public class Almacen {
         // Calcular los días entre fecha de retiro y la fecha actual
         long diasHoy = ChronoUnit.DAYS.between(fechaRetiro, fechaActual);
 
-        long diferencia = diasEntrega - diasHoy;
-
         double multaTotal = 0;
 
-        if (diferencia < 0) {
+        if (diasHoy > diasEntrega) {
             multaTotal = (diasHoy - diasEntrega) * MULTA_POR_DIA;
         }
+        alquiler.setMulta(multaTotal);
 
-        // Si el depósito cubre la multa, no hay deuda adicional
-        if (multaTotal <= deposito) {
-            return 0;
+        // La deuda es la parte de la multa que no cubre el depósito
+        double deudaCalculada = multaTotal - alquiler.getDeposito();
+        if (deudaCalculada < 0) {
+            deudaCalculada = 0;
         }
-        return multaTotal - deposito;
+        alquiler.setDeuda(deudaCalculada);
+
+        if(alquiler.isEntregado()){
+            alquiler.setMulta(0);
+            alquiler.setDeuda(0);
+            alquiler.setDeposito(0);
+        }
+        return alquiler;
     }
 
-    public String[] obtenerMultado(String[] alquiler, String multaString, double multa) {
-        // Crear nuevo arreglo con tamaño +1
-        String[] alquilerExtendido = Arrays.copyOf(alquiler, alquiler.length + 1);
+    public List<Alquiler> buscarAlquiler(Long cedulaResponsable) throws IOException {
+        List<Alquiler> alquileres = archivo.cargarAlquileres();
+        List<Alquiler> encontrados = new ArrayList<>();
 
-        if (multa == 0 || alquiler[16].equalsIgnoreCase("true")) {
-            alquilerExtendido[alquiler.length] = "0";
-        }
-        else{
-            // Agregar el nuevo valor al final
-            alquilerExtendido[alquiler.length] = multaString;
-        }
-        return alquilerExtendido;
-    }
-
-    public List<String[]> buscarAlquiler(String cedulaResponsable) throws IOException {
-        List<String[]> alquileres = archivo.cargarAlquileres();
-        List<String[]> encontrados = new ArrayList<>();
-
-        for (String[] alquiler : alquileres) {
-            if (alquiler[3].equals(cedulaResponsable)) {
+        for (Alquiler alquiler : alquileres) {
+            if (alquiler.getResponsable().getCedula() == cedulaResponsable) {
                 encontrados.add(alquiler);
             }
         }
@@ -116,57 +135,14 @@ public class Almacen {
         return encontrados;
     }
 
-    // Convierte en formato CSV un Alquiler
-    private String convertirACSV(Alquiler alquiler) {
-        // Se usa cada dato del alquiler y se separa mediante coma y se devuelve como String
-        return alquiler.getResponsable().getNombre() + "," +
-                alquiler.getResponsable().getDireccion() + "," +
-                alquiler.getResponsable().getCelular() + "," +
-                alquiler.getResponsable().getCedula() + "," +
-                alquiler.getEstudiante().getNombre() + "," +
-                alquiler.getEstudiante().getGrado() + "," +
-                alquiler.getEstudiante().getColegio() + "," +
-                alquiler.getEstudiante().getTalla() + "," +
-                alquiler.getTraje().getClase() + "," +
-                alquiler.getTraje().getColor() + "," +
-                alquiler.getTraje().isSombrero() + "," +
-                alquiler.getCantidad() + "," +
-                alquiler.getFechaRetiro() + "," +
-                alquiler.getFechaEntrega() + "," +
-                alquiler.getDeposito() + "," +
-                alquiler.isCancelado() + "," + false;
-    }
-
-    // Convierte true y false a texto como si y no
-    public List<String[]> reescribirAlquileres(List<String[]> alquileres){
-        List<String[]> nuevosAlquileres = new ArrayList<>();
-
-        for(String[] alquiler: alquileres){
-            nuevosAlquileres.add(reescribir(alquiler));
-        }
-        return nuevosAlquileres;
-    }
-
-    public String[] reescribir(String[] alquiler){
-        if (alquiler[16].equalsIgnoreCase("false")) {
-            alquiler[16] = "No";
-        }
-        else if (alquiler[16].equalsIgnoreCase("true")){
-            alquiler[16] = "Si";
-        }
-        if (alquiler[15].equalsIgnoreCase("false")) {
-            alquiler[15] = "No";
-        }
-        else if (alquiler[15].equalsIgnoreCase("true")){
-            alquiler[15] = "Si";
-        }
-        if (alquiler[10].equalsIgnoreCase("false")) {
-            alquiler[10] = "No";
-        }
-        else if (alquiler[10].equalsIgnoreCase("true")){
-            alquiler[10] = "Si";
-        }
-        return alquiler;
-    }
+//    // Convierte true y false a texto como si y no
+//    public List<Alquiler> reescribirAlquileres(List<Alquiler> alquileres){
+//        List<Alquiler> nuevosAlquileres = new ArrayList<>();
+//
+//        for(Alquiler alquiler: alquileres){
+//            nuevosAlquileres.add(reescribir(alquiler));
+//        }
+//        return nuevosAlquileres;
+//    }
 }
 

@@ -1,6 +1,7 @@
 package control;
 
 import logic.Almacen;
+import model.Alquiler;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class Controlador {
                                   String trajeClase, String color, String sombrero,
                                   String aEntrega, String mesEntrega, String diaEntrega,
                                   String horaEntrega) throws IOException {
-        try{
+//        try{
             // Si por ejemplo la fecha está "1", le pone el formato adecuado "01"
             mesEntrega = mesEntrega.length() == 1 ? "0" + mesEntrega : mesEntrega;
             diaEntrega = diaEntrega.length() == 1 ? "0" + diaEntrega : diaEntrega;
@@ -47,28 +48,31 @@ public class Controlador {
                     Long.parseLong(cedula), estudianteNombre, grado, colegio, talla,
                     Integer.parseInt(cantidad), fechaRetiro, fechaEntrega, depositoDouble,
                     trajeClase, color, Boolean.parseBoolean(sombrero));
-        }
-        catch (Exception e){
-            throw new IOException("Error de entrada de datos.");
-        }
+//        }
+//        catch (Exception e){
+//            throw new IOException("Error de entrada de datos.");
+//        }
     }
 
     // Recibe la lista de alquileres desde la logica y se la regresa a la interfaz
-    public List<String[]> obtenerAlquileres() throws IOException {
-        List<String[]> nuevosAlquileres = new ArrayList<>();
-        for(String[] alquiler: almacen.obtenerAlquileres()){
-            nuevosAlquileres.add(obtenerMultas(alquiler));
+    public List<Alquiler> obtenerAlquileres() throws IOException {
+        List<Alquiler> nuevosAlquileres = new ArrayList<>();
+        List<Alquiler> alquileres = almacen.obtenerAlquileres();
+        if(alquileres != null){
+            for(Alquiler alquiler: alquileres){
+                nuevosAlquileres.add(actualizarMultas(alquiler));
+            }
+            almacen.actualizarAlquileres(nuevosAlquileres);
+            return nuevosAlquileres;
         }
-        return nuevosAlquileres;
+        return null;
+
     }
 
     // Metodo para marcar como pagado, pasandole los datos necesarios a la logica
-    public boolean marcarComoPagado(String cedulaRepresentante, String retiro) throws IOException {
+    public boolean entregarAlquiler(Object cedulaRepresentante, Object fechaRetiro) throws IOException {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-            LocalDateTime fechaRetiro = LocalDateTime.parse(retiro, formatter);
-
-            return almacen.marcarComoPagado(cedulaRepresentante, String.valueOf(fechaRetiro));
+            return almacen.entregarAlquiler((Long)cedulaRepresentante, (LocalDateTime)fechaRetiro);
         }
         catch (Exception e){
             throw new IOException("Error de entrada de datos.");
@@ -76,34 +80,9 @@ public class Controlador {
     }
 
     // Llama al almacen para devolver una lista de arrays con los alquileres
-    public String[] obtenerMultas(String[] alquiler) throws IOException {
+    public Alquiler actualizarMultas(Alquiler alquiler) throws IOException {
         try{
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-
-            // Obtiene la fecha actual para ser comparada con la fecha de entrega, verificando si se pasó o no
-            LocalDateTime fecha = LocalDateTime.now().withSecond(0).withNano(0);
-            String actual = fecha.format(formatter);
-            String retiro = alquiler[12];
-            String entrega = alquiler[13];
-
-            // Convierte las fechas String en formato de fecha a LocalDateTime
-            LocalDateTime fechaActual = LocalDateTime.parse(actual, formatter);
-            LocalDateTime fechaRetiro = LocalDateTime.parse(retiro, formatter);
-            LocalDateTime fechaEntrega = LocalDateTime.parse(entrega, formatter);
-
-            double multa = almacen.verificarMultas(fechaActual, fechaRetiro, fechaEntrega, Double.parseDouble(alquiler[14]));
-
-            return almacen.reescribir(almacen.obtenerMultado(alquiler, String.valueOf(multa), multa));
-        }
-        catch (Exception e){
-            throw new IOException("Error de entrada de datos.");
-        }
-    }
-
-    // Metodo para buscar un alquiler en específico, pasandole los datos necesarios a la logica
-    public List<String[]> buscarAlquiler(String cedulaRepresentante) throws IOException {
-        try{
-            return almacen.reescribirAlquileres(almacen.buscarAlquiler(cedulaRepresentante));
+            return almacen.actualizarMultas(alquiler);
         }
         catch (Exception e){
             throw new IOException("Error de entrada de datos.");
