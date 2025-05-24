@@ -20,38 +20,25 @@ public class Controlador {
     public void registrarAlquiler(String responsableNombre, String direccion, String celular, String cedula,
                                   String estudianteNombre, String grado, String colegio, String talla,
                                   String cantidad, String deposito,
-                                  String trajeClase, String color, String sombrero,
-                                  String aEntrega, String mesEntrega, String diaEntrega,
-                                  String horaEntrega) throws IOException {
-//        try{
-            // Si por ejemplo la fecha está "1", le pone el formato adecuado "01"
-            mesEntrega = mesEntrega.length() == 1 ? "0" + mesEntrega : mesEntrega;
-            diaEntrega = diaEntrega.length() == 1 ? "0" + diaEntrega : diaEntrega;
-            horaEntrega = horaEntrega.length() == 1 ? "0" + horaEntrega : horaEntrega;
+                                  String trajeClase, String color, String sombrero, LocalDateTime fechaEntrega) throws IOException {
 
-            // Genera el formato necesario de fecha, agrupando todos los datos obtenidos de cada fecha
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        // Genera el formato necesario de fecha, agrupando todos los datos obtenidos de cada fecha
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 
-            LocalDateTime fechaActual = LocalDateTime.now().withSecond(0).withNano(0);
-            String retiro = fechaActual.format(formatter);
-            String entrega = aEntrega + "-" + mesEntrega + "-" + diaEntrega + "T" + horaEntrega + ":00";
+        LocalDateTime fechaActual = LocalDateTime.now().withSecond(0).withNano(0);
+        String retiro = fechaActual.format(formatter);
 
-            // Convierte las fechas String en formato de fecha a LocalDateTime
-            LocalDateTime fechaRetiro = LocalDateTime.parse(retiro, formatter);
-            LocalDateTime fechaEntrega = LocalDateTime.parse(entrega, formatter);
+        // Convierte las fechas String en formato de fecha a LocalDateTime
+        LocalDateTime fechaRetiro = LocalDateTime.parse(retiro, formatter);
 
-            // Convierte el String a Double
-            double depositoDouble = Double.parseDouble(deposito);
+        // Convierte el String a Double
+        double depositoDouble = Double.parseDouble(deposito);
 
-            // Le pasa la información ya en el tipo deseado a la logica del Almacen, parseandole algunos datos
-            almacen.registrarAlquiler(responsableNombre, direccion, Long.parseLong(celular),
-                    Long.parseLong(cedula), estudianteNombre, grado, colegio, talla,
-                    Integer.parseInt(cantidad), fechaRetiro, fechaEntrega, depositoDouble,
-                    trajeClase, color, Boolean.parseBoolean(sombrero));
-//        }
-//        catch (Exception e){
-//            throw new IOException("Error de entrada de datos.");
-//        }
+        // Le pasa la información ya en el tipo deseado a la logica del Almacen, parseandole algunos datos
+        almacen.registrarAlquiler(responsableNombre, direccion, Long.parseLong(celular),
+                Long.parseLong(cedula), estudianteNombre, grado, colegio, talla,
+                Integer.parseInt(cantidad), fechaRetiro, fechaEntrega, depositoDouble,
+                trajeClase, color, Boolean.parseBoolean(sombrero));
     }
 
     // Recibe la lista de alquileres desde la logica y se la regresa a la interfaz

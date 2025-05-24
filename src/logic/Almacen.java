@@ -25,6 +25,10 @@ public class Almacen {
                                   String estudianteNombre, String grado, String colegio, String talla, int cantidad,
                                   LocalDateTime retiro, LocalDateTime entrega, Double deposito,
                                   String trajeClase, String color, boolean sombrero) throws IOException {
+        if(!verificarFechas(retiro, entrega)){
+            throw new IOException("La fecha de entrega está antes que la fecha actual.");
+        }
+
 
         List<Alquiler> alquileres = archivo.cargarAlquileres();
 
@@ -76,6 +80,14 @@ public class Almacen {
 
     public void actualizarAlquileres(List<Alquiler> alquileres) throws IOException {
         archivo.actualizarAlquileres(alquileres);
+    }
+
+    public boolean verificarFechas(LocalDateTime retiro, LocalDateTime entrega){
+        long valor = ChronoUnit.SECONDS.between(retiro, entrega);
+        if(valor >= 0){
+            return true;
+        }
+        return false;
     }
 
     public Alquiler actualizarMultas(Alquiler alquiler) {
