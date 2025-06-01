@@ -4,8 +4,6 @@ import com.edu.uptcsoft.gestordeprestamos.controller.Controlador;
 
 import com.edu.uptcsoft.gestordeprestamos.model.Alquiler;
 import javafx.application.Application;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -34,11 +32,10 @@ public class InterfazFX extends Application {
 
     private Controlador controlador;
     private BorderPane principalPanel;
-    private VBox menuVBox, registroVBox, mostrarVBox;
+    private VBox registroVBox;
+    private VBox mostrarVBox;
     private StackPane imagePane;
     private final Font btnFont = Font.font("Segoe UI", 18);
-    private final double btnWidth = 500;
-    private final double btnHeight = 140;
 
     @Override
     public void start(Stage stage) {
@@ -77,7 +74,7 @@ public class InterfazFX extends Application {
         BorderPane.setAlignment(title, Pos.CENTER);
 
         // Menú lateral estilizado
-        menuVBox = new VBox(25);
+        VBox menuVBox = new VBox(25);
         menuVBox.setPadding(new Insets(40, 25, 40, 25));
         menuVBox.setAlignment(Pos.TOP_CENTER);
         menuVBox.setPrefWidth(280);
@@ -203,6 +200,8 @@ public class InterfazFX extends Application {
     private Button crearBoton(String texto) {
         Button btn = new Button(texto);
         btn.setFont(btnFont);
+        double btnWidth = 500;
+        double btnHeight = 140;
         btn.setPrefSize(btnWidth, btnHeight);
         btn.setStyle("""
         -fx-background-color: white;
