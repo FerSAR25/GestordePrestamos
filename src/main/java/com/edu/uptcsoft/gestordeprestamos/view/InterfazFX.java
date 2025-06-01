@@ -63,13 +63,13 @@ public class InterfazFX extends Application {
 
     private void initGUI(Stage stage) {
         principalPanel = new BorderPane();
-        principalPanel.setStyle("-fx-background-color: #F9FAFB;");
+        principalPanel.setStyle("-fx-background-color: #F4F6F8;");
         principalPanel.setPadding(new Insets(0));
 
         // Título principal
         Label title = new Label("Gestor de Préstamos");
-        title.setFont(Font.font("Segoe UI", 32));
-        title.setTextFill(Color.web("#2C3E50"));
+        title.setFont(Font.font("Segoe UI", FontWeight.BOLD, 34));
+        title.setTextFill(Color.web("#1F2D3D"));
         title.setAlignment(Pos.CENTER);
         title.setMaxWidth(Double.MAX_VALUE);
         title.setPadding(new Insets(30, 0, 20, 0));
@@ -77,18 +77,20 @@ public class InterfazFX extends Application {
         BorderPane.setAlignment(title, Pos.CENTER);
 
         // Menú lateral estilizado
-        menuVBox = new VBox(20);
-        menuVBox.setPadding(new Insets(30));
+        menuVBox = new VBox(25);
+        menuVBox.setPadding(new Insets(40, 25, 40, 25));
         menuVBox.setAlignment(Pos.TOP_CENTER);
-        menuVBox.setPrefWidth(260);
+        menuVBox.setPrefWidth(280);
         menuVBox.setStyle("""
-        -fx-background-color: linear-gradient(to bottom, #2C3E50, #34495E);
-        -fx-border-width: 0 2px 0 0;
-        -fx-border-color: #1A252F;
-    """);
+    -fx-background-color: linear-gradient(to bottom, rgba(44,62,80,0.97), rgba(52,73,94,0.97));
+    -fx-border-width: 0 0 0 0;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 12, 0.3, 2, 2);
+""");
 
         Label subtitle = new Label("Menú");
-        subtitle.setFont(Font.font("Segoe UI", 26));
+        subtitle.setFont(Font.font("Segoe UI", FontWeight.SEMI_BOLD, 24));
         subtitle.setTextFill(Color.WHITE);
         subtitle.setAlignment(Pos.CENTER);
         subtitle.setMaxWidth(Double.MAX_VALUE);
@@ -105,29 +107,33 @@ public class InterfazFX extends Application {
         for (Button b : botones) {
             b.setCursor(Cursor.HAND);
             b.setStyle("""
-            -fx-background-color: transparent;
+            -fx-background-color: rgba(255,255,255,0.1);
             -fx-text-fill: white;
             -fx-font-size: 16px;
-            -fx-background-radius: 20;
-            -fx-border-radius: 20;
-            -fx-padding: 10 20;
+            -fx-background-radius: 25;
+            -fx-border-radius: 25;
+            -fx-padding: 12 24;
+            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);
         """);
 
             b.setOnMouseEntered(e -> b.setStyle("""
             -fx-background-color: #1ABC9C;
             -fx-text-fill: white;
             -fx-font-size: 16px;
-            -fx-background-radius: 20;
-            -fx-border-radius: 20;
-            -fx-padding: 10 20;
+            -fx-background-radius: 25;
+            -fx-border-radius: 25;
+            -fx-padding: 12 24;
+            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 8, 0, 0, 3);
         """));
+
             b.setOnMouseExited(e -> b.setStyle("""
-            -fx-background-color: transparent;
+            -fx-background-color: rgba(255,255,255,0.1);
             -fx-text-fill: white;
             -fx-font-size: 16px;
-            -fx-background-radius: 20;
-            -fx-border-radius: 20;
-            -fx-padding: 10 20;
+            -fx-background-radius: 25;
+            -fx-border-radius: 25;
+            -fx-padding: 12 24;
+            -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2);
         """));
         }
 
@@ -136,7 +142,9 @@ public class InterfazFX extends Application {
         btnSalir.setOnAction(e -> System.exit(0));
 
         menuVBox.getChildren().addAll(btnRegistrar, btnVer, btnSalir);
-        principalPanel.setLeft(menuVBox);
+        BorderPane leftContainer = new BorderPane(menuVBox);
+        leftContainer.setPadding(new Insets(20, 10, 20, 20)); // margen izquierdo y separación del contenido
+        principalPanel.setLeft(leftContainer);
 
         // Imagen de fondo con botones invisibles encima
         Image imagen = new Image("file:imagenes/trajes.jpg");
@@ -178,7 +186,6 @@ public class InterfazFX extends Application {
         backImage.setSmooth(true);
         backImage.setCache(true);
 
-        // Ajuste dinámico de tamaño
         backImage.fitWidthProperty().bind(imagePane.widthProperty());
         backImage.fitHeightProperty().bind(imagePane.heightProperty());
 
@@ -190,6 +197,7 @@ public class InterfazFX extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
 
 
     private Button crearBoton(String texto) {
@@ -279,14 +287,68 @@ public class InterfazFX extends Application {
         ScrollPane scrollPane = new ScrollPane(new VBox(15, responsablePane, estudiantePane, trajePane));
         scrollPane.setFitToWidth(true);
 
-        // Botones
+        // Botón Registrar
         Button registrar = crearBoton("Registrar");
-        registrar.setStyle("-fx-background-color: #2DAEDF; -fx-text-fill: white; -fx-font-weight: bold;");
+        registrar.setStyle("""
+    -fx-background-color: linear-gradient(to right, #2DAEDF, #1ABC9C);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 25;
+    -fx-padding: 10 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0.3, 2, 2);
+""");
         registrar.setCursor(Cursor.HAND);
+        registrar.setOnMouseEntered(e -> registrar.setStyle("""
+    -fx-background-color: linear-gradient(to right, #26C6DA, #16A085);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 25;
+    -fx-padding: 10 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 8, 0.3, 2, 2);
+"""));
+        registrar.setOnMouseExited(e -> registrar.setStyle("""
+    -fx-background-color: linear-gradient(to right, #2DAEDF, #1ABC9C);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 25;
+    -fx-padding: 10 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0.3, 2, 2);
+"""));
 
+        // Botón Volver
         Button btnBack = crearBoton("Volver");
-        btnBack.setStyle("-fx-font-size: 14px; -fx-background-color: #CCCCCC; -fx-text-fill: white;");
+        btnBack.setStyle("""
+    -fx-background-color: #BDC3C7;
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.2, 1, 1);
+""");
         btnBack.setCursor(Cursor.HAND);
+        btnBack.setOnMouseEntered(e -> btnBack.setStyle("""
+    -fx-background-color: #95A5A6;
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0.2, 1, 1);
+"""));
+        btnBack.setOnMouseExited(e -> btnBack.setStyle("""
+    -fx-background-color: #BDC3C7;
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.2, 1, 1);
+"""));
+
 
         registrar.setOnAction(e -> {
             LocalDate fecha = datePicker.getValue();
@@ -418,11 +480,13 @@ public class InterfazFX extends Application {
 
         CheckBox chkEntregados = new CheckBox("Mostrar no entregados");
         chkEntregados.setFont(Font.font("Arial", 14));
+        chkEntregados.setCursor(Cursor.HAND);
 
         ComboBox<String> comboFiltro = new ComboBox<>(FXCollections.observableArrayList(
                 "Cédula", "Responsable", "Estudiante", "Fecha de Retiro", "Fecha de Entrega"
         ));
         comboFiltro.getSelectionModel().selectFirst();
+        comboFiltro.setCursor(Cursor.HAND);
 
         TextField campoBusqueda = new TextField();
         campoBusqueda.setPromptText("Buscar...");
@@ -493,11 +557,13 @@ public class InterfazFX extends Application {
         // Columna de Acción
         TableColumn<Alquiler, Void> colEntregar = new TableColumn<>("Acción");
         List<Alquiler> finalAlquileres = alquileres;
+
         colEntregar.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("Entregar");
 
             {
                 btn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+                btn.setCursor(Cursor.HAND);
                 btn.setOnAction(event -> {
                     Alquiler alquiler = getTableView().getItems().get(getIndex());
 
@@ -539,11 +605,37 @@ public class InterfazFX extends Application {
         HBox filtrosBox = new HBox(10, new Label("Buscar por:"), comboFiltro, campoBusqueda, chkEntregados);
         filtrosBox.setAlignment(Pos.CENTER_LEFT);
 
-        // Botón volver
-        Button btnVolver = new Button("Volver");
+        // Botón Volver
+        Button btnVolver = crearBoton("Volver");
+        btnVolver.setStyle("""
+    -fx-background-color: #BDC3C7;
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.2, 1, 1);
+""");
+        btnVolver.setCursor(Cursor.HAND);
+        btnVolver.setOnMouseEntered(e -> btnVolver.setStyle("""
+    -fx-background-color: #95A5A6;
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0.2, 1, 1);
+"""));
+        btnVolver.setOnMouseExited(e -> btnVolver.setStyle("""
+    -fx-background-color: #BDC3C7;
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0.2, 1, 1);
+"""));
         btnVolver.setOnAction(e -> resetMenu(mostrarVBox));
-        btnVolver.setStyle("-fx-background-color: #666; -fx-text-fill: white;");
-        btnVolver.setPrefWidth(100);
 
         VBox.setVgrow(tableView, Priority.ALWAYS);
         mostrarVBox.getChildren().addAll(title, filtrosBox, tableView, btnVolver);
